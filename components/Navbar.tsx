@@ -15,26 +15,23 @@ export default function Navbar() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center">
-                <svg
-  className="h-5 w-5 text-white"
-  fill="none"
-  viewBox="0 0 24 24"
-  stroke="currentColor"
->
-  <path
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={2}
-    d="M12 4.5c-5 0-9 5.5-9 7s4 7 9 7 9-5.5 9-7-4-7-9-7zm0 10.5a3 3 0 100-6 3 3 0 000 6z"
-  />
-</svg>
-
-
+                  <svg
+                    className="h-5 w-5 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4.5c-5 0-9 5.5-9 7s4 7 9 7 9-5.5 9-7-4-7-9-7zm0 10.5a3 3 0 100-6 3 3 0 000 6z"
+                    />
+                  </svg>
                 </div>
                 <span className="text-lg font-bold bg-gradient-to-r from-sky-400 to-blue-600 bg-clip-text text-transparent">
-  SafeReport
-</span>
-
+                  SafeReport
+                </span>
               </Link>
             </div>
 
@@ -66,17 +63,17 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Emergency Button */}
+            {/* Sign In / Sign Up and Emergency */}
             <div className="flex items-center space-x-4">
               <Link
-                href="/contact"
-                className="hidden md:block text-sm text-zinc-400 hover:text-white transition-colors"
+                href="/auth/signin"
+                className="hidden md:block text-sm text-zinc-400 hover:text-white transition-colors 1"
               >
-                Contact
+                Sign In / Sign Up
               </Link>
               <button className="group flex h-9 items-center gap-2 rounded-full bg-red-500/10 pl-4 pr-5 text-sm font-medium text-red-500 ring-1 ring-inset ring-red-500/20 transition-all hover:bg-red-500/20">
                 <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                Emergency: 911
+                Emergency
               </button>
 
               {/* Mobile Menu Button */}
