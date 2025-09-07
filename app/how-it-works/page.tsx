@@ -41,11 +41,6 @@ const HowItWorks = () => {
         </div>
       </div>
 
-      {/* Call to Action */}
-      <div className="text-center mt-12">
-        <a href="/report" className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg text-lg font-semibold mr-4">Make an Anonymous Report</a>
-        <a href="/security" className="bg-gray-700 hover:bg-gray-600 text-white py-3 px-6 rounded-lg text-lg font-semibold">Learn More About Security</a>
-      </div>
     </section>
   );
 };
