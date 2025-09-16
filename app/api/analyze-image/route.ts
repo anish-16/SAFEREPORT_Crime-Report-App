@@ -12,7 +12,7 @@ async function safeGenerateContent(prompt: string, base64Data: string) {
   while (retries--) {
     try {
       const result = await model.generateContent([
-        prompt,
+        { text: prompt }, // ✅ wrap in { text: ... }
         {
           inlineData: {
             data: base64Data,
@@ -22,14 +22,13 @@ async function safeGenerateContent(prompt: string, base64Data: string) {
       ]);
       return result;
     } catch (err: any) {
-      // if rate-limited (429), retry after delay
       if (err.status === 429 && retries > 0) {
         const delay = 30000; // 30 seconds
         console.warn(`Rate limit hit. Retrying in ${delay / 1000}s...`);
         await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
-      throw err; // other errors -> stop
+      throw err;
     }
   }
 }
@@ -45,7 +44,9 @@ TYPE: Choose one (Theft, Fire Outbreak, Medical Emergency, Natural Disaster, Vio
 DESCRIPTION: Write a clear, concise description`;
 
     const result = await safeGenerateContent(prompt, base64Data);
-    const text = await result.response.text();
+
+    // ✅ text() is not async
+    const text = result.response.text(); 
 
     const titleMatch = text.match(/TITLE:\s*(.+)/);
     const typeMatch = text.match(/TYPE:\s*(.+)/);
