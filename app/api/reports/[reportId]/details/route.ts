@@ -1,30 +1,30 @@
 // app/api/reports/[reportId]/details/route.ts
 
-// 1. CHANGE: Import NextRequest from 'next/server'
-import { NextResponse, NextRequest } from "next/server"; 
+import { NextResponse, NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import type { ReportStatus } from "@prisma/client"; 
+// FIX: Use standard import for the ReportStatus type and runtime enum
+import { ReportStatus } from "@prisma/client"; 
 import { getServerSession } from "next-auth/next";
 
 const prisma = new PrismaClient();
 
-// 2. CHANGE: Simplify the type definition for Params
-// This is the structure Next.js expects for the context object
-interface RouteContext { 
-    params: { reportId: string };
-}
+// NO SEPARATE INTERFACE USED HERE TO AVOID TYPE CONFLICTS
 
-// 3. CHANGE: Use NextRequest for the request argument
-export async function GET(request: NextRequest, context: RouteContext) { 
+// GET handler to fetch report details
+export async function GET(
+  request: NextRequest, 
+  // FIX: Use INLINE TYPE for params to ensure build compatibility
+  { params }: { params: { reportId: string } } 
+) { 
   try {
-    const { reportId } = context.params; // Use 'context' here
+    const { reportId } = params;
 
     const report = await prisma.report.findUnique({
       where: {
         reportId,
       },
     });
-// ... rest of GET is correct ...
+
     if (!report) {
       return NextResponse.json({ error: "Report not found" }, { status: 404 });
     }
@@ -39,18 +39,20 @@ export async function GET(request: NextRequest, context: RouteContext) {
   }
 }
 
-// 4. CHANGE: Use NextRequest for the request argument
-export async function PATCH(request: NextRequest, context: RouteContext) { 
+// PATCH handler to update report status
+export async function PATCH(
+  request: NextRequest, 
+  // FIX: Use INLINE TYPE for params to ensure build compatibility
+  { params }: { params: { reportId: string } } 
+) { 
   try {
-    // auth check (keep or remove as per your app)
+    // Auth check
     const session = await getServerSession();
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // You can now access .json() on NextRequest without casting 'request'
     const body = (await request.json()) as { status?: string }; 
-// ... rest of PATCH is correct ...
     const statusStr = body.status;
 
     if (!statusStr || typeof statusStr !== "string") {
@@ -60,11 +62,8 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
     }
 
-    // Get the runtime enum values from Prisma and validate
-    // (use require to ensure runtime enum object is available)
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { ReportStatus: ReportStatusRuntime } = require("@prisma/client");
-    const allowed = Object.values(ReportStatusRuntime) as string[];
+    // Get the runtime enum values directly from the imported ReportStatus enum
+    const allowed = Object.values(ReportStatus) as string[];
 
     if (!allowed.includes(statusStr)) {
       return NextResponse.json(
@@ -73,16 +72,15 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
     }
 
-    // Cast to the Prisma enum type so TS + Prisma accept it
+    // Cast to the Prisma enum type
     const status = statusStr as ReportStatus;
 
     const updated = await prisma.report.update({
       where: {
-        // <-- IMPORTANT: confirm your Prisma model key
-        reportId: context.params.reportId, // Use 'context.params' here
+        reportId: params.reportId,
       },
       data: {
-        status, // now correctly typed as ReportStatus
+        status,
       },
     });
 
