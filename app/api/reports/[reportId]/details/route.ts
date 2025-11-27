@@ -1,14 +1,13 @@
-// app/api/reports/[reportId]/details/route.ts
-
 import { NextResponse, NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 // FIX: Use standard import for the ReportStatus type and runtime enum
 import { ReportStatus } from "@prisma/client"; 
 import { getServerSession } from "next-auth/next";
 
+// Initialize Prisma client globally or outside the handlers
 const prisma = new PrismaClient();
 
-// NO SEPARATE INTERFACE USED HERE TO AVOID TYPE CONFLICTS
+// NO SEPARATE INTERFACE USED HERE TO AVOID NEXT.JS TYPE CONFLICTS
 
 // GET handler to fetch report details
 export async function GET(
@@ -46,7 +45,7 @@ export async function PATCH(
   { params }: { params: { reportId: string } } 
 ) { 
   try {
-    // Auth check
+    // Auth check (using next-auth)
     const session = await getServerSession();
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
