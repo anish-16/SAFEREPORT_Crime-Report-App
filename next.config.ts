@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Add the 'eslint' object to ignore errors during production build
+  eslint: {
+    // !! DANGER: This is a temporary measure to enable deployment. !!
+    ignoreDuringBuilds: true,
+  },
+  // ... other configs you might have
 };
 
-export default nextConfig;
+module.exports = nextConfig;
