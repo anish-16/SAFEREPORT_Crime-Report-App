@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-
 import { ReportStatus, ReportType } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
@@ -17,18 +16,15 @@ export async function GET(req: Request) {
     const type = searchParams.get("type") as ReportType | null;
 
     // Build the where clause based on filters
-    const where = {
-      ...(status && { status }),
-      ...(type && { type }),
-    };
+    const where: Record<string, any> = {};
+    if (status) where.status = status;
+    if (type) where.type = type;
 
     // Add timeout and retry logic
     const reports = await Promise.race([
       prisma.report.findMany({
         where,
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
           reportId: true,

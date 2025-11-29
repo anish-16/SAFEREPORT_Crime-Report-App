@@ -1,14 +1,11 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { PrismaClient, ReportStatus } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 
 const prisma = new PrismaClient();
 
 // GET handler
-export async function GET(
-  request: NextRequest,
-  context: { params: { reportId: string } }
-) {
+export async function GET(request: Request, context: any) {
   try {
     const { reportId } = context.params;
 
@@ -31,17 +28,14 @@ export async function GET(
 }
 
 // PATCH handler
-export async function PATCH(
-  request: NextRequest,
-  context: { params: { reportId: string } }
-) {
+export async function PATCH(request: Request, context: any) {
   try {
     const session = await getServerSession();
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = (await request.json()) as { status?: string };
+    const body = await request.json();
     const statusStr = body.status;
 
     if (!statusStr || typeof statusStr !== "string") {

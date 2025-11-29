@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-// use flash (better free quota)
+// Use flash (better free quota)
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 async function safeGenerateContent(prompt: string, base64Data: string) {
@@ -45,8 +45,8 @@ DESCRIPTION: Write a clear, concise description`;
 
     const result = await safeGenerateContent(prompt, base64Data);
 
-    // ✅ text() is not async
-    const text = result.response.text(); 
+    // ✅ text() is synchronous
+    const text = result.response.text();
 
     const titleMatch = text.match(/TITLE:\s*(.+)/);
     const typeMatch = text.match(/TYPE:\s*(.+)/);
