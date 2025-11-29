@@ -1,27 +1,19 @@
 import { NextResponse, NextRequest } from "next/server";
-import { PrismaClient } from "@prisma/client";
-// FIX: Use standard import for the ReportStatus type and runtime enum
-import { ReportStatus } from "@prisma/client"; 
+import { PrismaClient, ReportStatus } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 
-// Initialize Prisma client globally or outside the handlers
 const prisma = new PrismaClient();
 
-// NO SEPARATE INTERFACE USED HERE TO AVOID NEXT.JS TYPE CONFLICTS
-
-// GET handler to fetch report details
+// GET handler
 export async function GET(
-  request: NextRequest, 
-  // FIX: Use INLINE TYPE for params to ensure build compatibility
-  { params }: { params: { reportId: string } } 
-) { 
+  request: NextRequest,
+  context: { params: { reportId: string } }
+) {
   try {
-    const { reportId } = params;
+    const { reportId } = context.params;
 
     const report = await prisma.report.findUnique({
-      where: {
-        reportId,
-      },
+      where: { reportId },
     });
 
     if (!report) {
@@ -38,20 +30,18 @@ export async function GET(
   }
 }
 
-// PATCH handler to update report status
+// PATCH handler
 export async function PATCH(
-  request: NextRequest, 
-  // FIX: Use INLINE TYPE for params to ensure build compatibility
-  { params }: { params: { reportId: string } } 
-) { 
+  request: NextRequest,
+  context: { params: { reportId: string } }
+) {
   try {
-    // Auth check (using next-auth)
     const session = await getServerSession();
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = (await request.json()) as { status?: string }; 
+    const body = (await request.json()) as { status?: string };
     const statusStr = body.status;
 
     if (!statusStr || typeof statusStr !== "string") {
@@ -61,9 +51,7 @@ export async function PATCH(
       );
     }
 
-    // Get the runtime enum values directly from the imported ReportStatus enum
     const allowed = Object.values(ReportStatus) as string[];
-
     if (!allowed.includes(statusStr)) {
       return NextResponse.json(
         { error: `Invalid status. Allowed: ${allowed.join(", ")}` },
@@ -71,21 +59,19 @@ export async function PATCH(
       );
     }
 
-    // Cast to the Prisma enum type
     const status = statusStr as ReportStatus;
 
     const updated = await prisma.report.update({
-      where: {
-        reportId: params.reportId,
-      },
-      data: {
-        status,
-      },
+      where: { reportId: context.params.reportId },
+      data: { status },
     });
 
     return NextResponse.json(updated);
   } catch (error) {
     console.error("Error updating report:", error);
-    return NextResponse.json({ error: "Error updating report" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error updating report" },
+      { status: 500 }
+    );
   }
 }
