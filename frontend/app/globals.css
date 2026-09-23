@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
+    --card: 222 43% 10%;
+    --card-foreground: 210 40% 96%;
+    --muted: 220 30% 16%;
+    --muted-foreground: 215 20% 65%;
+    --border: 220 25% 20%;
+    --primary: 4 84% 58%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 222 47% 6%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 152 60% 45%;
+    --success-foreground: 152 70% 6%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 30 80% 8%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(4 84% 58% / 0.12), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 110%, hsl(199 89% 48% / 0.08), transparent);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-primary/30;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border border-white/10 bg-white/[0.04] backdrop-blur-xl;
+  }
+
+  .card-base {
+    @apply rounded-2xl border border-white/10 bg-card/80 backdrop-blur;
+  }
+
+  .input-base {
+    @apply w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus:border-primary/60 focus:ring-2 focus:ring-primary/20;
+  }
+}

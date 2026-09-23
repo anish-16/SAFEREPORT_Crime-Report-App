@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum ReportStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  DISMISSED
+}
+
+enum ReportType {
+  EMERGENCY
+  NON_EMERGENCY
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reports   Report[]
+}
+
+model Report {
+  id          String        @id @default(cuid())
+  reportId    String        @unique
+  userId      String?
+  user        User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  type        ReportType
+  title       String
+  description String
+  category    String?
+  location    String?
+  latitude    Float?
+  longitude   Float?
+  mediaUrl    String?
+  mediaType   String?
+  thumbUrl    String?
+  analysis    Json?
+  severity    Int?
+  keywords    String[]      @default([])
+  mediaHash   String?
+  status      ReportStatus  @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  events      StatusEvent[]
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([status])
+}
+
+model StatusEvent {
+  id        String        @id @default(cuid())
+  reportId  String
+  report    Report        @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  from      ReportStatus?
+  to        ReportStatus
+  note      String?
+  actorId   String?
+  createdAt DateTime      @default(now())
+
+  @@index([reportId])
+}
