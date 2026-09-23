@@ -20,7 +20,6 @@ async function main() {
   });
 
   console.log('Seeded users:');
-  console.log('  admin@safereport.app / password123  (ADMIN)');
   console.log('  demo@safereport.app  / password123  (USER)');
 }
 
