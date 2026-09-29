@@ -1,4 +1,10 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+// Same-origin by default: the unified server (repo-root server.ts) answers
+// /api on the same port as the UI, and `next dev` proxies /api to the backend
+// in split mode — so no API origin env var is needed. Only set
+// NEXT_PUBLIC_API_URL for a split deploy without the dev proxy (keep the /api suffix).
+const configured = process.env.NEXT_PUBLIC_API_URL;
+const BASE =
+  configured && !/^https?:\/\/(localhost|127\.0\.0\.1)/i.test(configured) ? configured : '/api';
 
 export class ApiError extends Error {
   status: number;

@@ -3,7 +3,9 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 
-export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
+// Always backend/uploads, independent of which entrypoint/cwd launched the
+// server (standalone API runs from backend/, unified server from the repo root).
+export const UPLOAD_DIR = path.resolve(__dirname, '../../uploads');
 const THUMB_DIR = path.join(UPLOAD_DIR, 'thumbs');
 
 for (const dir of [UPLOAD_DIR, THUMB_DIR]) {

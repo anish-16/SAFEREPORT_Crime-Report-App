@@ -1,9 +1,16 @@
 # SafeReport — Frontend
 
-Next.js 15 (App Router) + Tailwind CSS. Talks to the backend via `NEXT_PUBLIC_API_URL`.
+Next.js 15 (App Router) + Tailwind CSS.
 
-Pages: `/` landing · `/auth/signin` · `/auth/signup` · `/submit-report` (live analysis sidebar) ·
-`/track-report` (public status timeline) · `/dashboard` (profile + auto-polling reports) ·
-`/admin` (moderation console) · `/how-it-works`.
+Talks to the API on the **same origin** (`/api`):
 
-Scripts: `npm run dev` · `npm run build` · `npm run typecheck`
+- **Unified mode** (`npm run dev` / `npm start` at the repo root) — the root
+  `server.ts` serves the UI and the API on one port.
+- **Split mode** (`npm run dev:split`) — `next dev` proxies `/api` and
+  `/uploads` to the standalone backend on `:4000` (see `next.config.ts`).
+
+No `.env` file required. Optional override for a split deploy without the proxy:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
+```
