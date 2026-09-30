@@ -27,8 +27,8 @@
 
 ## <a name="introduction">🤖 Introduction</a>
 
-SafeReport v2 is a complete rebuild: an enterprise-style anonymous incident
-reporting platform. Anyone can report theft, fire, road accidents, flooding,
+SafeReport : an enterprise-style anonymous incident
+reporting platform. Anyone can report theft, fire, road accidents, flooding,    
 cybercrime, bullying, safety hazards — anything — without revealing their
 identity. A **built-in intelligence engine** (fully local, no Gemini/OpenAI
 keys) classifies every report, drafts the title/description from your evidence,
