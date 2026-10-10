@@ -1,0 +1,23 @@
+services:
+  # ONE service: unified server (Express API + Next.js UI) from server.ts
+  # Docs: https://render.com/docs/blueprint-spec
+  - type: web
+    name: safereport
+    runtime: node
+    plan: free
+    rootDir: .            # repo root — NOT backend/ or frontend/
+    # npm workspaces: one install covers backend + frontend + server.ts deps
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false        # paste your Neon connection string in the Render dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: PORT
+        value: ''          # Render injects PORT automatically; if used, PORT must be 10000
+      - key: NODE_ENV
+        value: production
