@@ -15,3 +15,11 @@ export function formatDate(iso: string | Date): string {
     minute: '2-digit',
   });
 }
+
+/** "IN_PROGRESS" -> "In Progress": enum codes read as words, never shouted. */
+export function labelize(value: string): string {
+  return value
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/(^|\s)\w/g, (c) => c.toUpperCase());
+}

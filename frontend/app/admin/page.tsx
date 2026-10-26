@@ -7,8 +7,7 @@ import { useAuth } from '@/lib/auth-context';
 import { api, hasSession } from '@/lib/api';
 import type { Report, ReportStatus } from '@/lib/types';
 import { StatusBadge } from '@/components/badges';
-import { formatDate } from '@/lib/utils';
-import { cn } from '@/lib/utils';
+import { cn, formatDate, labelize } from '@/lib/utils';
 
 const STATUSES: ReportStatus[] = ['PENDING', 'IN_PROGRESS', 'RESOLVED', 'DISMISSED'];
 
@@ -80,7 +79,7 @@ export default function AdminPage() {
       <div className="mb-6 flex items-center gap-2">
         <ShieldCheck className="h-5 w-5 text-primary" />
         <h1 className="text-2xl font-bold">Moderation Console</h1>
-        <span className="rounded-md bg-white/[0.07] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+        <span className="rounded-md bg-muted px-2 py-0.5 text-step-small font-bold  text-muted-foreground">
           {user.role}
         </span>
       </div>
@@ -106,13 +105,13 @@ export default function AdminPage() {
                 void load(q, s);
               }}
               className={cn(
-                'rounded-full border px-3 py-1.5 text-xs font-semibold transition',
+                'rounded-full border px-3 py-1.5 text-step-small font-semibold transition',
                 statusFilter === s
                   ? 'border-primary bg-primary/15 text-primary'
-                  : 'border-white/10 text-muted-foreground hover:bg-white/[0.05]'
+                  : 'border-border text-muted-foreground hover:bg-muted'
               )}
             >
-              {s === 'ALL' ? 'All' : s.replace('_', ' ')}
+              {s === 'ALL' ? 'All' : labelize(s)}
             </button>
           ))}
         </div>
@@ -137,7 +136,7 @@ export default function AdminPage() {
         <div className="card-base overflow-x-auto">
           <table className="w-full min-w-[760px] text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr data-taste-skill-ignore="a real table keeps its header rule" className="border-b border-border text-step-small font-semibold text-muted-foreground">
                 <th className="px-4 py-3">Report</th>
                 <th className="px-4 py-3">Filed by</th>
                 <th className="px-4 py-3">Category</th>
@@ -149,21 +148,21 @@ export default function AdminPage() {
             </thead>
             <tbody>
               {reports.map((r) => (
-                <tr key={r.id} className="border-b border-white/[0.06] transition hover:bg-white/[0.03]">
+                <tr key={r.id} data-taste-skill-ignore="a real table keeps its row rules" className="border-b border-muted transition hover:bg-muted/60">
                   <td className="px-4 py-3">
-                    <p className="font-mono text-xs font-bold text-accent">{r.reportId}</p>
+                    <p className="tabular-nums text-step-small font-bold text-primary">{r.reportId}</p>
                     <p className="max-w-[220px] truncate text-sm font-medium">{r.title}</p>
                   </td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">
+                  <td className="px-4 py-3 text-step-small text-muted-foreground">
                     {r.user?.name ?? '—'}
                     <br />
-                    <span className="text-[11px]">{r.user?.email}</span>
+                    <span className="text-step-small">{r.user?.email}</span>
                   </td>
-                  <td className="px-4 py-3 text-xs">{r.category ?? '—'}</td>
+                  <td className="px-4 py-3 text-step-small">{r.category ?? '—'}</td>
                   <td className={cn('px-4 py-3 text-sm font-bold', (r.severity ?? 0) >= 7 && 'text-destructive')}>
                     {r.severity ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">{formatDate(r.createdAt)}</td>
+                  <td className="px-4 py-3 text-step-small text-muted-foreground">{formatDate(r.createdAt)}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={r.status} />
                   </td>
@@ -172,11 +171,11 @@ export default function AdminPage() {
                       value={r.status}
                       disabled={savingId === r.id}
                       onChange={(e) => void setStatus(r.id, e.target.value as ReportStatus)}
-                      className="rounded-lg border border-white/10 bg-white/[0.05] px-2 py-1.5 text-xs outline-none focus:border-primary/50 disabled:opacity-50"
+                      className="rounded-lg border border-border bg-muted px-2 py-1.5 text-step-small outline-none focus:border-primary/50 disabled:opacity-50"
                     >
                       {STATUSES.map((s) => (
                         <option key={s} value={s} className="bg-background">
-                          {s.replace('_', ' ')}
+                          {labelize(s)}
                         </option>
                       ))}
                     </select>

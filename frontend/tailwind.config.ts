@@ -16,24 +16,33 @@ const config: Config = {
         destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
         success: { DEFAULT: 'hsl(var(--success))', foreground: 'hsl(var(--success-foreground))' },
         warning: { DEFAULT: 'hsl(var(--warning))', foreground: 'hsl(var(--warning-foreground))' },
+        field: { dark: 'hsl(var(--field-dark))', warm: 'hsl(var(--field-warm))' },
+      },
+      fontFamily: {
+        sans: ['var(--font-schibsted)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        // exactly five steps: small, body, lead, head, display
+        'step-small': ['clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)', { lineHeight: '1.4', letterSpacing: '-0.01em' }],
+        'step-body': ['clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem)', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+        'step-lead': ['clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem)', { lineHeight: '1.35', letterSpacing: '-0.015em' }],
+        'step-head': ['clamp(1.75rem, 1.1rem + 2.6vw, 3rem)', { lineHeight: '1.0', letterSpacing: '-0.04em' }],
+        display: ['clamp(3rem, 7vw, 6.5rem)', { lineHeight: '0.95', letterSpacing: '-0.05em' }],
       },
       borderRadius: {
-        xl: '1rem',
-        '2xl': '1.25rem',
+        // the artefact has square edges; sheets of the app get the 16px radius
+        xl: '0',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
       },
       keyframes: {
         'fade-up': {
           from: { opacity: '0', transform: 'translateY(14px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
-        'pulse-dot': {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.35' },
-        },
       },
       animation: {
         'fade-up': 'fade-up 0.5s ease-out both',
-        'pulse-dot': 'pulse-dot 1.6s ease-in-out infinite',
       },
     },
   },

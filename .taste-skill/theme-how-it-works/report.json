@@ -1,0 +1,1547 @@
+{
+ "url": "http://localhost:58940/how-it-works",
+ "at": "2026-10-25T15:49:37.043Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 5,
+   "filled": [
+    0.46,
+    0.45,
+    0.36,
+    0.22,
+    0.34
+   ],
+   "motion": {
+    "elements": 9,
+    "css": 9,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 3857,
+     "screens": 4.3,
+     "words": 811,
+     "img": 1,
+     "video": 0,
+     "canvas": 0,
+     "svg": 36,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "How It Works",
+     "words": 3,
+     "chars": 12,
+     "lines": 1,
+     "size": 32,
+     "vw": 2.2,
+     "font": "Schibsted Grotesk",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.5,
+     "top": 96,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "How It Works",
+     "words": 3,
+     "lines": 1,
+     "size": 32,
+     "font": "Schibsted Grotesk"
+    },
+    "headings": [
+     {
+      "text": "How It Works",
+      "words": 3,
+      "chars": 12,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Schibsted Grotesk",
+      "weight": 600,
+      "tracking": -0.025,
+      "leading": 1.5,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.68,
+      "top": 96,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Report it. Stay anonymous.",
+      "words": 4,
+      "chars": 26,
+      "lines": 2,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Schibsted Grotesk",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.36,
+      "top": 3484,
+      "tag": "p",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 2,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 1,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Schibsted Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      10,
+      14,
+      16,
+      18,
+      19,
+      20,
+      24,
+      32,
+      48
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Schibsted Grotesk",
+      "size": 14,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 5.9
+     },
+     "measureChars": 133,
+     "max": {
+      "size": 48,
+      "vw": 3.3,
+      "font": "Schibsted Grotesk",
+      "text": "Report it.Stay anonymous."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.12,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#ffffff",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 1
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#ffffff",
+       "top": 48,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#e4e2dd",
+       "top": 3408,
+       "hsl": {
+        "h": 43,
+        "s": 0.11,
+        "l": 0.88
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#5c647a",
+       "share": 0.85
+      },
+      {
+       "color": "#1f2b4d",
+       "share": 0.14
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#f3f3f1",
+      "hsl": {
+       "h": 60,
+       "s": 0.08,
+       "l": 0.95
+      },
+      "fg": "#5c647a"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 9,
+     "inHero": 7,
+     "radius": 0,
+     "height": 58,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "File a report",
+      "You witness an incident",
+      "Attach evidence",
+      "Built-in intelligence classifies it",
+      "Routed to the designated authority"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 1,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 10,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 10,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 5,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 1531
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 7,
+     "fixed": true,
+     "height": 48,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "schibsted grotesk",
+     "schibsted grotesk fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 3857,
+    "margins": {
+     "left": 216,
+     "right": 233
+    },
+    "sections": [
+     {
+      "sel": "main.curtain-main.flex-1",
+      "tag": "main",
+      "top": 48,
+      "height": 3360,
+      "words": 758,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "How It Works",
+       "size": 32,
+       "tag": "h1"
+      },
+      "left": 232,
+      "right": 233,
+      "textLeft": 237,
+      "textRight": 246,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.relative.bg-field-warm",
+      "tag": "footer",
+      "top": 3408,
+      "height": 449,
+      "words": 86,
+      "media": 0,
+      "middle": 108,
+      "heading": {
+       "text": "Report it.",
+       "size": 48,
+       "tag": "p"
+      },
+      "left": 216,
+      "right": 222,
+      "textLeft": 216,
+      "textRight": 418,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "How It Works",
+      "size": 32,
+      "top": 96,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 309,
+      "n": 10
+     },
+     {
+      "x": 382,
+      "n": 5
+     },
+     {
+      "x": 353,
+      "n": 4
+     },
+     {
+      "x": 253,
+      "n": 2
+     },
+     {
+      "x": 606,
+      "n": 2
+     },
+     {
+      "x": 633,
+      "n": 2
+     },
+     {
+      "x": 237,
+      "n": 1
+     },
+     {
+      "x": 321,
+      "n": 1
+     },
+     {
+      "x": 699,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 28,
+    "bodySize": 14,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.14,
+    "voidBox": {
+     "x": 1200,
+     "y": 120,
+     "w": 240,
+     "h": 780
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": false,
+    "ground": "#ffffff",
+    "sidebar": null,
+    "topbar": {
+     "h": 48
+    },
+    "canvas": {
+     "left": 216,
+     "right": 222
+    },
+    "hero": {
+     "text": "How It Works",
+     "words": 3,
+     "chars": 12,
+     "lines": 1,
+     "size": 32,
+     "vw": 2.2,
+     "font": "Schibsted Grotesk",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.5,
+     "top": 96,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 11,
+     "firstScreen": 2,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 12,
+     "radii": [
+      [
+       16,
+       10
+      ],
+      [
+       0,
+       2
+      ]
+     ],
+     "heavyBorders": 2,
+     "borderSamples": [
+      "#e5922e on #ffffff (2.48:1)",
+      "#1e2b4c on #ffffff (13.95:1)"
+     ],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 220,
+       "size": 32,
+       "radius": "8px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      14,
+      16,
+      18,
+      19,
+      20,
+      24,
+      32,
+      48
+     ]
+    },
+    "title": {
+     "text": "How It Works",
+     "size": 32,
+     "top": 96
+    },
+    "colourShare": 0.001
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 4,
+   "filled": [
+    0.59,
+    0.49,
+    0.51,
+    0.42
+   ],
+   "motion": {
+    "elements": 9,
+    "css": 9,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 4021,
+     "screens": 3.9,
+     "words": 811,
+     "img": 1,
+     "video": 0,
+     "canvas": 0,
+     "svg": 36,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 1,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "How It Works",
+     "words": 3,
+     "chars": 12,
+     "lines": 1,
+     "size": 32,
+     "vw": 4.2,
+     "font": "Schibsted Grotesk",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.5,
+     "top": 96,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "How It Works",
+     "words": 3,
+     "lines": 1,
+     "size": 32,
+     "font": "Schibsted Grotesk"
+    },
+    "headings": [
+     {
+      "text": "How It Works",
+      "words": 3,
+      "chars": 12,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "Schibsted Grotesk",
+      "weight": 600,
+      "tracking": -0.025,
+      "leading": 1.5,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 96,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Report it. Stay anonymous.",
+      "words": 4,
+      "chars": 26,
+      "lines": 2,
+      "size": 37.6,
+      "vw": 4.9,
+      "font": "Schibsted Grotesk",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.42,
+      "top": 3624,
+      "tag": "p",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 2,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 1,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Schibsted Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      10,
+      13,
+      14,
+      16,
+      18,
+      20,
+      24,
+      32,
+      38
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Schibsted Grotesk",
+      "size": 17.9,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.01,
+      "contrast": 5.9
+     },
+     "measureChars": 97,
+     "max": {
+      "size": 37.6,
+      "vw": 4.9,
+      "font": "Schibsted Grotesk",
+      "text": "Report it.Stay anonymous."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.12,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#ffffff",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 1
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#ffffff",
+       "top": 48,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#e4e2dd",
+       "top": 3548,
+       "hsl": {
+        "h": 43,
+        "s": 0.11,
+        "l": 0.88
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#5c647a",
+       "share": 0.85
+      },
+      {
+       "color": "#1f2b4d",
+       "share": 0.14
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#f3f3f1",
+      "hsl": {
+       "h": 60,
+       "s": 0.08,
+       "l": 0.95
+      },
+      "fg": "#5c647a"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 9,
+     "inHero": 7,
+     "radius": 0,
+     "height": 58,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "File a report",
+      "You witness an incident",
+      "Attach evidence",
+      "Built-in intelligence classifies it",
+      "Routed to the designated authority"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 1,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 10,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 10,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 7,
+     "fixed": true,
+     "height": 48,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "schibsted grotesk",
+     "schibsted grotesk fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 4021,
+    "margins": {
+     "left": 25,
+     "right": 25
+    },
+    "sections": [
+     {
+      "sel": "main.curtain-main.flex-1",
+      "tag": "main",
+      "top": 48,
+      "height": 3500,
+      "words": 758,
+      "media": 0,
+      "middle": 535,
+      "heading": {
+       "text": "How It Works",
+       "size": 32,
+       "tag": "h1"
+      },
+      "left": 24,
+      "right": 0,
+      "textLeft": 29,
+      "textRight": -660,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.relative.bg-field-warm",
+      "tag": "footer",
+      "top": 3548,
+      "height": 473,
+      "words": 86,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Report it.",
+       "size": 38,
+       "tag": "p"
+      },
+      "left": 64,
+      "right": 70,
+      "textLeft": 64,
+      "textRight": 95,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "How It Works",
+      "size": 32,
+      "top": 96,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 101,
+      "n": 12
+     },
+     {
+      "x": 145,
+      "n": 6
+     },
+     {
+      "x": 45,
+      "n": 2
+     },
+     {
+      "x": 29,
+      "n": 1
+     },
+     {
+      "x": 270,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 22,
+    "bodySize": 14,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "dark": false,
+    "ground": "#ffffff",
+    "sidebar": null,
+    "topbar": {
+     "h": 48
+    },
+    "canvas": {
+     "left": 25,
+     "right": -515
+    },
+    "hero": {
+     "text": "How It Works",
+     "words": 3,
+     "chars": 12,
+     "lines": 1,
+     "size": 32,
+     "vw": 4.2,
+     "font": "Schibsted Grotesk",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.5,
+     "top": 96,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 11,
+     "firstScreen": 2,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 12,
+     "radii": [
+      [
+       16,
+       10
+      ],
+      [
+       0,
+       2
+      ]
+     ],
+     "heavyBorders": 2,
+     "borderSamples": [
+      "#e5922e on #ffffff (2.48:1)",
+      "#1e2b4c on #ffffff (13.95:1)"
+     ],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 220,
+       "size": 32,
+       "radius": "8px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      13,
+      14,
+      16,
+      18,
+      20,
+      24,
+      32,
+      38
+     ]
+    },
+    "title": {
+     "text": "How It Works",
+     "size": 32,
+     "top": 96
+    },
+    "colourShare": 0.005
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 7,
+   "filled": [
+    0.48,
+    0.92,
+    0.7,
+    0.55,
+    0.53,
+    0.52,
+    0.52
+   ],
+   "motion": {
+    "elements": 9,
+    "css": 9,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 5802,
+     "screens": 6.9,
+     "words": 797,
+     "img": 1,
+     "video": 0,
+     "canvas": 0,
+     "svg": 36,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 1,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "How It Works",
+     "words": 3,
+     "chars": 12,
+     "lines": 1,
+     "size": 28,
+     "vw": 7.2,
+     "font": "Schibsted Grotesk",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.5,
+     "top": 96,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "How It Works",
+     "words": 3,
+     "lines": 1,
+     "size": 28,
+     "font": "Schibsted Grotesk"
+    },
+    "headings": [
+     {
+      "text": "How It Works",
+      "words": 3,
+      "chars": 12,
+      "lines": 1,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Schibsted Grotesk",
+      "weight": 600,
+      "tracking": -0.025,
+      "leading": 1.5,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 96,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Inside the intelligence engine",
+      "words": 4,
+      "chars": 30,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Schibsted Grotesk",
+      "weight": 600,
+      "tracking": -0.025,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 2205,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Report it. Stay anonymous.",
+      "words": 4,
+      "chars": 26,
+      "lines": 2,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Schibsted Grotesk",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.79,
+      "top": 5191,
+      "tag": "p",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 3,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 2,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Schibsted Grotesk",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      10,
+      13,
+      14,
+      17,
+      18,
+      20,
+      24,
+      28
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Schibsted Grotesk",
+      "size": 17,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": -0.01,
+      "contrast": 5.9
+     },
+     "measureChars": 45,
+     "max": {
+      "size": 28,
+      "vw": 7.2,
+      "font": "Schibsted Grotesk",
+      "text": "How It Works"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.12,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#ffffff",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 1
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#ffffff",
+       "top": 48,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#e4e2dd",
+       "top": 5115,
+       "hsl": {
+        "h": 43,
+        "s": 0.11,
+        "l": 0.88
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#5c647a",
+       "share": 0.85
+      },
+      {
+       "color": "#1f2b4d",
+       "share": 0.14
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#f3f3f1",
+      "hsl": {
+       "h": 60,
+       "s": 0.08,
+       "l": 0.95
+      },
+      "fg": "#5c647a"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 8,
+     "inHero": 6,
+     "radius": 0,
+     "height": 58,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "You witness an incident",
+      "Attach evidence",
+      "Built-in intelligence classifies it",
+      "Routed to the designated authority",
+      "You track it privately"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 1,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 11,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 12,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 1,
+     "fixed": true,
+     "height": 48,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "schibsted grotesk",
+     "schibsted grotesk fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 5802,
+    "margins": {
+     "left": 17,
+     "right": 17
+    },
+    "sections": [
+     {
+      "sel": "main.curtain-main.flex-1",
+      "tag": "main",
+      "top": 48,
+      "height": 5067,
+      "words": 758,
+      "media": 0,
+      "middle": 883,
+      "heading": {
+       "text": "How It Works",
+       "size": 28,
+       "tag": "h1"
+      },
+      "left": 16,
+      "right": 0,
+      "textLeft": 18,
+      "textRight": -1005,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.relative.bg-field-warm",
+      "tag": "footer",
+      "top": 5115,
+      "height": 688,
+      "words": 86,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Report it.",
+       "size": 28,
+       "tag": "p"
+      },
+      "left": 40,
+      "right": 41,
+      "textLeft": 40,
+      "textRight": 41,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "How It Works",
+      "size": 28,
+      "top": 96,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 93,
+      "n": 12
+     },
+     {
+      "x": 37,
+      "n": 8
+     },
+     {
+      "x": 21,
+      "n": 1
+     },
+     {
+      "x": 81,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 22,
+    "bodySize": 14,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "dark": false,
+    "ground": "#ffffff",
+    "sidebar": null,
+    "topbar": {
+     "h": 48
+    },
+    "canvas": {
+     "left": 17,
+     "right": -863
+    },
+    "hero": {
+     "text": "How It Works",
+     "words": 3,
+     "chars": 12,
+     "lines": 1,
+     "size": 28,
+     "vw": 7.2,
+     "font": "Schibsted Grotesk",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.5,
+     "top": 96,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 12,
+     "firstScreen": 1,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 15,
+     "radii": [
+      [
+       16,
+       11
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       8,
+       2
+      ]
+     ],
+     "heavyBorders": 2,
+     "borderSamples": [
+      "#e5922e on #ffffff (2.48:1)",
+      "#1e2b4c on #ffffff (13.95:1)"
+     ],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 220,
+       "size": 32,
+       "radius": "8px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      13,
+      14,
+      16,
+      17,
+      18,
+      20,
+      24,
+      28
+     ]
+    },
+    "title": {
+     "text": "How It Works",
+     "size": 28,
+     "top": 96
+    },
+    "colourShare": 0.003
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "below-fold",
+   "width": 1440,
+   "message": "Only 2 of 11 blocks start on the first 1440px screen.",
+   "fix": "Every block the brief names shows its header and first rows on the first desktop screen: size the headline block to its question, cap long lists with \"View all\", and put time-sensitive blocks before long tables."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\Admin\\Desktop\\SAFEREPORT_Crime-Report-App-main\\.taste-skill\\theme-how-it-works\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\Admin\\Desktop\\SAFEREPORT_Crime-Report-App-main\\.taste-skill\\theme-how-it-works\\desktop-page-01.jpg",
+    "C:\\Users\\Admin\\Desktop\\SAFEREPORT_Crime-Report-App-main\\.taste-skill\\theme-how-it-works\\desktop-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\Admin\\Desktop\\SAFEREPORT_Crime-Report-App-main\\.taste-skill\\theme-how-it-works\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\Admin\\Desktop\\SAFEREPORT_Crime-Report-App-main\\.taste-skill\\theme-how-it-works\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\Admin\\Desktop\\SAFEREPORT_Crime-Report-App-main\\.taste-skill\\theme-how-it-works\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\Admin\\Desktop\\SAFEREPORT_Crime-Report-App-main\\.taste-skill\\theme-how-it-works\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

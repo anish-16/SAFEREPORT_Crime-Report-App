@@ -2,54 +2,162 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Direction: "The page is the object" (drawn) — the site is SafeReport's own
+  incident case file. Palette "Navy on white": one paper ground, navy ink,
+  tangerine as the single accent, warm grey for fields. Two flat fields:
+  near-black (#05070a) and warm grey (#e3e1dc). No gradients, no glass.
+*/
 @layer base {
   :root {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 96%;
-    --card: 222 43% 10%;
-    --card-foreground: 210 40% 96%;
-    --muted: 220 30% 16%;
-    --muted-foreground: 215 20% 65%;
-    --border: 220 25% 20%;
-    --primary: 4 84% 58%;
+    --background: 0 0% 100%;
+    --foreground: 224 43% 21%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 43% 21%;
+    --muted: 60 8% 95%;
+    --muted-foreground: 225 14% 42%;
+    --border: 43 11% 88%;
+    --primary: 224 43% 21%;
     --primary-foreground: 0 0% 100%;
-    --accent: 199 89% 48%;
-    --accent-foreground: 222 47% 6%;
-    --destructive: 0 84% 60%;
+    --accent: 33 79% 54%;
+    --accent-foreground: 224 43% 21%;
+    --destructive: 2 71% 41%;
     --destructive-foreground: 0 0% 100%;
-    --success: 152 60% 45%;
-    --success-foreground: 152 70% 6%;
-    --warning: 38 92% 55%;
-    --warning-foreground: 30 80% 8%;
+    --success: 152 33% 30%;
+    --success-foreground: 0 0% 100%;
+    --warning: 40 60% 30%;
+    --warning-foreground: 0 0% 100%;
+    /* the two flat fields the paper sits on */
+    --field-dark: 216 33% 3%;
+    --field-warm: 43 11% 88%;
+    /* type steps dealt with the direction */
+    --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem); /* 13-14px */
+    --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+    --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
+  }
+
+  /* Dark: the paper turns to ink-night — same navy/tangerine direction,
+     inverted ground. Ink becomes warm paper-white; navy lifts so it stays
+     readable as text and still works as a fill. */
+  .dark {
+    --background: 216 33% 4%;
+    --foreground: 40 11% 96%;
+    --card: 216 24% 8%;
+    --card-foreground: 40 11% 96%;
+    --muted: 216 17% 13%;
+    --muted-foreground: 220 12% 67%;
+    --border: 216 16% 19%;
+    --primary: 219 62% 73%;
+    --primary-foreground: 216 33% 5%;
+    --accent: 33 85% 57%;
+    --accent-foreground: 216 33% 5%;
+    --destructive: 2 75% 63%;
+    --destructive-foreground: 216 33% 5%;
+    --success: 152 42% 52%;
+    --success-foreground: 216 33% 5%;
+    --warning: 40 75% 57%;
+    --warning-foreground: 216 33% 5%;
+    --field-dark: 216 33% 3%;
+    --field-warm: 216 15% 13%;
   }
 
   * {
     @apply border-border;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(4 84% 58% / 0.12), transparent),
-      radial-gradient(ellipse 60% 40% at 90% 110%, hsl(199 89% 48% / 0.08), transparent);
-    background-attachment: fixed;
+    font-feature-settings: 'kern';
   }
 
   ::selection {
-    @apply bg-primary/30;
+    @apply bg-accent/30;
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
   }
 }
 
 @layer components {
-  .glass {
-    @apply border border-white/10 bg-white/[0.04] backdrop-blur-xl;
-  }
-
+  /* a sheet of paper: white, one tone step, a 1px edge, nothing floating */
   .card-base {
-    @apply rounded-2xl border border-white/10 bg-card/80 backdrop-blur;
+    @apply rounded-2xl border border-border bg-card;
   }
 
+  /* form fields may have lines */
   .input-base {
-    @apply w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus:border-primary/60 focus:ring-2 focus:ring-primary/20;
+    @apply w-full border border-muted-foreground/40 bg-card px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus:border-primary;
   }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 active:translate-y-px disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 border border-primary/40 bg-card px-5 py-3 text-sm font-semibold text-primary transition hover:bg-muted active:translate-y-px disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .link-quiet {
+    @apply text-muted-foreground transition hover:text-foreground;
+  }
+}
+
+/* Entrance helper: elements marked [data-reveal] rise once, staggered. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .ken-burns {
+    animation: none !important;
+  }
+}
+
+/* one moving picture: a slow drift on the hero photograph */
+.ken-burns {
+  animation: ken-burns 36s ease-in-out infinite alternate;
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.14) translate3d(-1.5%, -1.5%, 0);
+  }
+}
+
+/* the curtain footer (landing only): content slides up to uncover it */
+.curtain-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 0;
+}
+
+.curtain-main {
+  position: relative;
+  z-index: 1;
+  background-color: hsl(var(--background));
 }

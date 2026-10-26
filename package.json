@@ -1,23 +1,18 @@
 {
   "name": "safereport",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
-  "workspaces": ["backend", "frontend"],
+  "workspaces": ["frontend"],
   "scripts": {
     "setup": "npm install",
-    "dev": "tsx watch server.ts",
-    "dev:split": "concurrently -n api,web -c blue,magenta \"npm run dev -w backend\" \"npm run dev -w frontend\"",
-    "build": "npm run build -w backend && npm run build -w frontend",
-    "start": "tsx server.ts --prod",
-    "typecheck": "npm run typecheck -w backend && npm run typecheck -w frontend && tsc --noEmit",
-    "db:push": "npm run db:push -w backend",
-    "db:seed": "npm run seed -w backend",
-    "db:studio": "npm run db:studio -w backend",
-    "postinstall": "prisma generate --schema backend/prisma/schema.prisma || echo 'Prisma client not generated yet — run: npm run db:generate -w backend'"
-  },
-  "dependencies": {
-    "next": "^15.1.7",
-    "tsx": "^4.19.2"
+    "dev": "npm run dev -w frontend",
+    "build": "npm run build -w frontend",
+    "start": "npm run start -w frontend",
+    "typecheck": "npm run typecheck -w frontend",
+    "db:push": "npm run db:push -w frontend",
+    "db:seed": "npm run seed -w frontend",
+    "db:studio": "npm run db:studio -w frontend",
+    "postinstall": "prisma generate --schema frontend/prisma/schema.prisma || echo 'Prisma client not generated yet — run: npm run db:generate -w frontend'"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",

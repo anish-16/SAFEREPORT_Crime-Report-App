@@ -1,41 +1,78 @@
 'use client';
 
-import { Brain, Camera, Video, FileText, MapPin, AlertTriangle, Sparkles } from 'lucide-react';
+import { Brain, Camera, Video, FileText, MapPin, AlertTriangle, Sparkles, Cpu, ShieldAlert } from 'lucide-react';
 import type { AnalysisResult } from '@/lib/types';
 import { PriorityBadge, SeverityMeter } from './badges';
 import { cn } from '@/lib/utils';
 
 /**
- * Renders the local intelligence engine output: triage verdict, category,
- * severity/urgency, evidence findings, and detected entities.
+ * Renders the analysis output: triage verdict, category, severity/urgency,
+ * evidence findings and detected entities — plus the external AI pass when a
+ * provider key is configured (Settings → AI).
  */
 export function AnalysisPanel({ analysis, compact = false }: { analysis: AnalysisResult; compact?: boolean }) {
-  const { text, triage, findings, image, video, mediaKind } = analysis;
+  const { text, triage, findings, image, video, mediaKind, ai, aiError } = analysis;
 
   return (
     <div className="card-base overflow-hidden">
-      <div className="flex items-center justify-between border-b border-white/10 bg-primary/[0.06] px-4 py-3">
+      <div className="flex items-center justify-between bg-primary/[0.06] px-4 py-3">
         <div className="flex items-center gap-2 text-sm font-semibold">
           <Brain className="h-4 w-4 text-primary" />
-          Local Intelligence Analysis
+          {ai ? `Intelligence · local + ${ai.providerLabel}` : 'Local Intelligence Analysis'}
         </div>
         <PriorityBadge priority={triage.priority} />
       </div>
 
       <div className="space-y-4 p-4">
+        {/* external AI pass (bring-your-own-key) */}
+        {ai && (
+          <div className="rounded-xl border border-accent/25 bg-accent/[0.05] p-3">
+            <div className="mb-1 flex items-center gap-2 text-step-small font-bold  text-primary">
+              <Cpu className="h-3.5 w-3.5" />
+              {ai.providerLabel} · {ai.model}
+              {ai.usedMedia ? ' · saw the photo' : ''}
+            </div>
+            {ai.summary && (
+              <p className="text-sm leading-relaxed text-foreground/90">{ai.summary}</p>
+            )}
+            {ai.findings && ai.findings.length > 0 && (
+              <ul className="mt-2 space-y-1.5">
+                {ai.findings.map((f, i) => (
+                  <li key={i} className="flex gap-2 text-step-small leading-relaxed text-muted-foreground">
+                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-step-small text-muted-foreground">
+              {ai.category && <span>Category: <span className="text-foreground/80">{ai.category}</span></span>}
+              {ai.severity != null && <span>Severity {ai.severity}/10</span>}
+              {ai.priority && <span>Priority {ai.priority}</span>}
+              {ai.authority && <span>Routes to {ai.authority}</span>}
+            </div>
+          </div>
+        )}
+        {aiError && aiError !== 'no-key' && aiError !== 'skipped' && (
+          <p className="flex items-start gap-2 text-step-small leading-snug text-warning">
+            <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            AI pass skipped ({aiError}) — showing the built-in engine result.
+          </p>
+        )}
+
         {/* verdict */}
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
+        <div className="rounded-xl border border-border bg-muted p-3">
           <div className="mb-1 flex items-center gap-2">
-            <Sparkles className="h-3.5 w-3.5 text-accent" />
-            <span className="text-xs font-bold uppercase tracking-wide text-accent">Auto-Triage</span>
-            <span className="text-xs text-muted-foreground">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <span className="text-step-small font-bold  text-primary">Auto-Triage</span>
+            <span className="text-step-small text-muted-foreground">
               · {Math.round(triage.confidence * 100)}% confidence
             </span>
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground">{triage.recommendedAction}</p>
           {analysis.suggestions && (
-            <p className="mt-2 flex items-center gap-1.5 border-t border-white/10 pt-2 text-[11px] text-muted-foreground">
-              <Sparkles className="h-3 w-3 text-accent" />
+            <p className="mt-3 flex items-center gap-1.5 text-step-small text-muted-foreground">
+              <Sparkles className="h-3 w-3 text-primary" />
               Draft ready — category, type, title & description pre-filled from{' '}
               {analysis.suggestions.source === 'text'
                 ? 'your text'
@@ -49,23 +86,23 @@ export function AnalysisPanel({ analysis, compact = false }: { analysis: Analysi
 
         {/* category + meters */}
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl border border-white/10 p-3">
-            <p className="mb-1 text-xs font-medium text-muted-foreground">Category</p>
+          <div className="rounded-xl border border-border p-3">
+            <p className="mb-1 text-step-small font-medium text-muted-foreground">Category</p>
             <p className="text-sm font-semibold">{text.category}</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <p className="mt-0.5 text-step-small text-muted-foreground">
               {Math.round(text.categoryConfidence * 100)}% match
             </p>
             {analysis.suggestions?.authority && (
-              <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+              <p className="mt-1 text-step-small leading-snug text-muted-foreground">
                 <span className="font-semibold text-foreground/80">Routes to:</span>{' '}
                 {analysis.suggestions.authority}
               </p>
             )}
           </div>
-          <div className="rounded-xl border border-white/10 p-3">
-            <p className="mb-1 text-xs font-medium text-muted-foreground">Urgency</p>
+          <div className="rounded-xl border border-border p-3">
+            <p className="mb-1 text-step-small font-medium text-muted-foreground">Urgency</p>
             <div className="flex items-center gap-2">
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
                 <div
                   className={cn(
                     'h-full rounded-full',
@@ -74,40 +111,40 @@ export function AnalysisPanel({ analysis, compact = false }: { analysis: Analysi
                   style={{ width: `${text.urgency}%` }}
                 />
               </div>
-              <span className="text-xs font-semibold tabular-nums text-muted-foreground">{text.urgency}%</span>
+              <span className="text-step-small font-semibold tabular-nums text-muted-foreground">{text.urgency}%</span>
             </div>
-            <p className="mt-1.5 text-[11px] capitalize text-muted-foreground">
+            <p className="mt-1.5 text-step-small capitalize text-muted-foreground">
               Reporter sounds {text.sentiment}
             </p>
           </div>
         </div>
 
-        <div className="rounded-xl border border-white/10 p-3">
-          <p className="mb-2 text-xs font-medium text-muted-foreground">Severity</p>
+        <div className="rounded-xl border border-border p-3">
+          <p className="mb-2 text-step-small font-medium text-muted-foreground">Severity</p>
           <SeverityMeter value={text.severity} />
         </div>
 
         {/* media forensics */}
         {!compact && (image || video) && (
-          <div className="rounded-xl border border-white/10 p-3">
-            <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+          <div className="rounded-xl border border-border p-3">
+            <div className="mb-2 flex items-center gap-2 text-step-small font-bold  text-muted-foreground">
               {mediaKind === 'image' ? <Camera className="h-3.5 w-3.5" /> : <Video className="h-3.5 w-3.5" />}
               {mediaKind === 'image' ? 'Image Forensics' : 'Video Forensics'}
             </div>
             {image && (
               <div className="space-y-2">
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-step-small text-muted-foreground">
                   <span>{image.width}×{image.height} ({image.megapixels} MP)</span>
                   <span>Brightness {image.brightness}</span>
                   <span>Contrast {image.contrast}</span>
                   <span>Sharpness {image.sharpness}</span>
                   {image.exif.camera && <span className="text-foreground/80">{image.exif.camera}</span>}
-                  {image.exif.gps && <span className="text-accent">GPS present</span>}
+                  {image.exif.gps && <span className="text-primary">GPS present</span>}
                 </div>
               </div>
             )}
             {video && (
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-step-small text-muted-foreground">
                 {video.width && <span>{video.width}×{video.height}</span>}
                 {video.durationSec && <span>{Math.round(video.durationSec)}s</span>}
                 {video.fps && <span>{video.fps} fps</span>}
@@ -120,14 +157,14 @@ export function AnalysisPanel({ analysis, compact = false }: { analysis: Analysi
 
         {/* findings */}
         {!compact && findings.length > 0 && (
-          <div className="rounded-xl border border-white/10 p-3">
-            <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+          <div className="rounded-xl border border-border p-3">
+            <div className="mb-2 flex items-center gap-2 text-step-small font-bold  text-muted-foreground">
               <AlertTriangle className="h-3.5 w-3.5" />
               Findings
             </div>
             <ul className="space-y-1.5">
               {findings.map((f, i) => (
-                <li key={i} className="flex gap-2 text-xs leading-relaxed text-muted-foreground">
+                <li key={i} className="flex gap-2 text-step-small leading-relaxed text-muted-foreground">
                   <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-primary" />
                   {f}
                 </li>
@@ -142,8 +179,8 @@ export function AnalysisPanel({ analysis, compact = false }: { analysis: Analysi
             {text.qualityFlags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {text.qualityFlags.map((q) => (
-                  <span key={q} className="rounded-md bg-success/10 px-2 py-0.5 text-[11px] text-success">
-                    ✓ {q}
+                  <span key={q} className="rounded-md bg-success/10 px-2 py-0.5 text-step-small text-success">
+                    {q}
                   </span>
                 ))}
               </div>
@@ -151,17 +188,17 @@ export function AnalysisPanel({ analysis, compact = false }: { analysis: Analysi
             {(text.entities.plates.length > 0 || text.entities.weapons.length > 0 || text.entities.vehicles.length > 0) && (
               <div className="flex flex-wrap gap-1.5">
                 {text.entities.plates.map((p) => (
-                  <span key={p} className="rounded-md bg-accent/10 px-2 py-0.5 text-[11px] font-mono text-accent">
-                    🚗 {p}
+                  <span key={p} className="rounded-md bg-accent/10 px-2 py-0.5 text-step-small tabular-nums text-primary">
+                    {p}
                   </span>
                 ))}
                 {text.entities.weapons.map((w) => (
-                  <span key={w} className="rounded-md bg-destructive/10 px-2 py-0.5 text-[11px] text-destructive">
-                    ⚠ {w}
+                  <span key={w} className="rounded-md bg-destructive/10 px-2 py-0.5 text-step-small text-destructive">
+                    {w}
                   </span>
                 ))}
                 {text.entities.vehicles.map((v) => (
-                  <span key={v} className="rounded-md bg-warning/10 px-2 py-0.5 text-[11px] text-warning">
+                  <span key={v} className="rounded-md bg-warning/10 px-2 py-0.5 text-step-small text-warning">
                     {v}
                   </span>
                 ))}
@@ -170,7 +207,7 @@ export function AnalysisPanel({ analysis, compact = false }: { analysis: Analysi
             {text.entities.locations.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {text.entities.locations.map((l) => (
-                  <span key={l} className="flex items-center gap-1 rounded-md bg-white/[0.06] px-2 py-0.5 text-[11px] text-muted-foreground">
+                  <span key={l} className="flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-step-small text-muted-foreground">
                     <MapPin className="h-3 w-3" /> {l}
                   </span>
                 ))}
@@ -180,9 +217,15 @@ export function AnalysisPanel({ analysis, compact = false }: { analysis: Analysi
         )}
 
         {!compact && (
-          <div className="flex items-center gap-2 border-t border-white/10 pt-3 text-[11px] text-muted-foreground">
+          <div className="mt-4 flex items-center gap-2 pt-1 text-step-small text-muted-foreground">
             <FileText className="h-3 w-3" />
             Engine {analysis.engineVersion} · analyzed {new Date(analysis.analyzedAt).toLocaleString()}
+            {analysis.ai && (
+              <>
+                {' · '}
+                {analysis.ai.providerLabel} pass · {analysis.ai.model}
+              </>
+            )}
           </div>
         )}
       </div>

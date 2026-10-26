@@ -89,6 +89,27 @@ export interface ReportSuggestions {
   source: 'text' | 'media' | 'text+media';
 }
 
+/** Insight produced by the optional bring-your-own-key AI provider. */
+export interface AiInsight {
+  provider: string;
+  providerLabel: string;
+  model: string;
+  analyzedAt: string;
+  category?: string;
+  type?: ReportType;
+  title?: string;
+  description?: string;
+  authority?: string;
+  severity?: number;
+  urgency?: number;
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status?: ReportStatus;
+  confidence?: number;
+  summary?: string;
+  findings?: string[];
+  usedMedia?: boolean;
+}
+
 export interface AnalysisResult {
   engineVersion: string;
   mediaKind: 'image' | 'video' | 'none';
@@ -106,6 +127,10 @@ export interface AnalysisResult {
   };
   findings: string[];
   analyzedAt: string;
+  /** Present when an AI provider key is configured in Settings. */
+  ai?: AiInsight;
+  /** Why the AI pass was skipped, when it was ("no-key", a provider error…). */
+  aiError?: string;
 }
 
 export interface Report {

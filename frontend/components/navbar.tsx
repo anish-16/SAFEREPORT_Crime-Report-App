@@ -3,26 +3,17 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import {
-  ShieldCheck,
-  ChevronDown,
-  LogOut,
-  LayoutDashboard,
-  FileText,
-  Menu,
-  X,
-  Phone,
-  Lock,
-} from 'lucide-react';
+import { ChevronDown, LogOut, LayoutDashboard, FileText, Menu, X, Phone, Settings2 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { cn } from '@/lib/utils';
 
 const LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/submit-report', label: 'Submit Report' },
-  { href: '/track-report', label: 'Track Report' },
-  { href: '/emergency-diary', label: 'Emergency Diary' },
-  { href: '/how-it-works', label: 'How It Works' },
+  { href: '/submit-report', label: 'File a report' },
+  { href: '/dashboard', label: 'My reports' },
+  { href: '/track-report', label: 'Track' },
+  { href: '/emergency-diary', label: 'Emergency numbers' },
+  { href: '/how-it-works', label: 'How it works' },
 ];
 
 export function Navbar() {
@@ -52,6 +43,7 @@ export function Navbar() {
     router.push('/');
   }
 
+  const isAdmin = user?.role === 'ADMIN' || user?.role === 'MODERATOR';
   const initials = user
     ? user.name
         .split(' ')
@@ -61,104 +53,108 @@ export function Navbar() {
         .toUpperCase()
     : '?';
 
+  const tab = (href: string) =>
+    cn(
+      'relative px-1 py-4 text-step-small font-semibold transition',
+      pathname === href ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+      pathname === href &&
+        'after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-primary'
+    );
+
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
-            <ShieldCheck className="h-5 w-5" />
-          </span>
-          <span className="text-lg font-bold tracking-tight">
-            Safe<span className="text-primary">Report</span>
-          </span>
+    <header className="sticky top-0 z-50 bg-muted">
+      <div className="mx-auto flex h-12 max-w-[1088px] items-center justify-between gap-6 px-5">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-step-body font-extrabold tracking-[-0.04em]"
+        >
+          <span aria-hidden className="h-3.5 w-3.5 shrink-0 bg-accent" />
+          SafeReport
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-6 md:flex">
           {LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={cn(
-                'rounded-lg px-3 py-2 text-sm font-medium transition',
-                pathname === l.href
-                  ? 'bg-white/10 text-foreground'
-                  : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'
-              )}
-            >
+            <Link key={l.href} href={l.href} className={tab(l.href)}>
               {l.label}
             </Link>
           ))}
-          {(user?.role === 'ADMIN' || user?.role === 'MODERATOR') && (
-            <Link
-              href="/admin"
-              className={cn(
-                'rounded-lg px-3 py-2 text-sm font-medium transition',
-                pathname === '/admin'
-                  ? 'bg-white/10 text-foreground'
-                  : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'
-              )}
-            >
-              Admin
-            </Link>
+          {isAdmin && (
+            <>
+              <Link href="/settings" className={tab('/settings')}>
+                AI settings
+              </Link>
+              <Link href="/admin" className={tab('/admin')}>
+                Admin
+              </Link>
+            </>
           )}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
           {loading ? (
-            <div className="h-9 w-24 animate-pulse rounded-lg bg-white/10" />
+            <div className="h-7 w-24 bg-muted" />
           ) : user ? (
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setMenuOpen((v) => !v)}
-                className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] py-1.5 pl-1.5 pr-3 transition hover:bg-white/[0.08]"
+                className="flex items-center gap-2 py-1 text-step-small font-semibold transition hover:text-accent"
                 aria-label="Open profile menu"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/20 text-xs font-bold text-primary">
+                <span className="flex h-7 w-7 items-center justify-center bg-primary text-step-small font-semibold text-primary-foreground">
                   {initials}
                 </span>
-                <span className="hidden max-w-[110px] truncate text-sm font-medium sm:block">
-                  {user.name}
-                </span>
-                <ChevronDown className={cn('h-4 w-4 text-muted-foreground transition', menuOpen && 'rotate-180')} />
+                <span className="hidden max-w-[120px] truncate sm:block">{user.name}</span>
+                <ChevronDown className={cn('h-3.5 w-3.5 transition', menuOpen && 'rotate-180')} />
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 mt-2 w-64 animate-fade-up rounded-2xl border border-white/10 bg-card/95 p-2 shadow-2xl backdrop-blur-xl">
-                  <div className="border-b border-white/10 px-3 py-3">
-                    <p className="truncate text-sm font-semibold">{user.name}</p>
-                    <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-                    <span className="mt-2 inline-block rounded-md bg-accent/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+                <div
+                  className="absolute right-0 mt-2 w-60 border border-border bg-card p-2 shadow-2xl" data-taste-skill-ignore="a real overlay menu keeps its lift"
+                >
+                  <div className="px-3 py-2.5">
+                    <p className="truncate text-step-small font-semibold">{user.name}</p>
+                    <p className="truncate text-step-small text-muted-foreground">{user.email}</p>
+                    <span className="mt-1.5 inline-block bg-muted px-1.5 py-0.5 text-step-small font-semibold text-muted-foreground">
                       {user.role}
                     </span>
                   </div>
                   <Link
                     href="/dashboard"
-                    className="mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm transition hover:bg-white/[0.06]"
+                    className="flex items-center gap-2 px-3 py-2 text-step-small transition hover:bg-muted"
                   >
                     <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-                    My Reports & Status
+                    My reports &amp; status
                   </Link>
                   <Link
                     href="/submit-report"
-                    className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm transition hover:bg-white/[0.06]"
+                    className="flex items-center gap-2 px-3 py-2 text-step-small transition hover:bg-muted"
                   >
                     <FileText className="h-4 w-4 text-muted-foreground" />
-                    Submit New Report
+                    File a new report
                   </Link>
                   <Link
                     href="/emergency-diary"
-                    className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm transition hover:bg-white/[0.06]"
+                    className="flex items-center gap-2 px-3 py-2 text-step-small transition hover:bg-muted"
                   >
                     <Phone className="h-4 w-4 text-muted-foreground" />
-                    Emergency Diary
+                    Emergency numbers
                   </Link>
-                  <p className="mt-1 flex items-start gap-1.5 border-t border-white/10 px-3 pt-2.5 text-[10px] leading-snug text-muted-foreground">
-                    <Lock className="mt-0.5 h-3 w-3 shrink-0 text-success" />
-                    Private to you — your reports stay anonymous to everyone else.
+                  {isAdmin && (
+                    <Link
+                      href="/settings"
+                      className="flex items-center gap-2 px-3 py-2 text-step-small transition hover:bg-muted"
+                    >
+                      <Settings2 className="h-4 w-4 text-muted-foreground" />
+                      AI settings
+                    </Link>
+                  )}
+                  <p className="mt-2 bg-muted px-3 py-2 text-step-small leading-snug text-muted-foreground">
+                    Reports are anonymous: no name, email or phone is written into them.
                   </p>
                   <button
                     onClick={handleSignOut}
-                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-destructive transition hover:bg-destructive/10"
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-step-small font-semibold text-destructive transition hover:bg-destructive/10"
                   >
                     <LogOut className="h-4 w-4" />
                     Sign out
@@ -167,24 +163,18 @@ export function Navbar() {
               )}
             </div>
           ) : (
-            <div className="hidden items-center gap-2 sm:flex">
+            <div className="hidden items-center gap-4 sm:flex">
               <Link
-                href="/auth/signin"
-                className="rounded-xl px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+                href="/submit-report"
+                className="bg-primary px-4 py-2 text-step-small font-semibold text-primary-foreground transition hover:bg-primary/90"
               >
-                Sign in
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
-              >
-                Get Started
+                File a report
               </Link>
             </div>
           )}
 
           <button
-            className="rounded-lg p-2 text-muted-foreground md:hidden"
+            className="p-1 text-muted-foreground md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -194,26 +184,25 @@ export function Navbar() {
       </div>
 
       {mobileOpen && (
-        <nav className="border-t border-white/10 px-4 py-3 md:hidden">
+        <nav className="bg-muted px-5 py-2 md:hidden">
           {LINKS.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className={cn(
-                'block rounded-lg px-3 py-2.5 text-sm font-medium',
-                pathname === l.href ? 'bg-white/10' : 'text-muted-foreground'
-              )}
+              className={cn('block py-2.5 text-step-body font-semibold', pathname === l.href ? 'text-foreground' : 'text-muted-foreground')}
             >
               {l.label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link href="/settings" className="block py-2.5 text-step-body font-semibold text-muted-foreground">
+              AI settings
+            </Link>
+          )}
           {!user && !loading && (
-            <div className="mt-2 flex gap-2">
-              <Link href="/auth/signin" className="flex-1 rounded-xl border border-white/10 px-4 py-2.5 text-center text-sm">
-                Sign in
-              </Link>
-              <Link href="/auth/signup" className="flex-1 rounded-xl bg-primary px-4 py-2.5 text-center text-sm font-semibold text-primary-foreground">
-                Get Started
+            <div className="mb-2 mt-2">
+              <Link href="/submit-report" className="block flex-1 bg-primary px-4 py-2.5 text-center text-step-body font-semibold text-primary-foreground">
+                File a report
               </Link>
             </div>
           )}

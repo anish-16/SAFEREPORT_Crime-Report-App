@@ -1,12 +1,13 @@
 services:
-  # ONE service: unified server (Express API + Next.js UI) from server.ts
+  # ONE service: the SafeReport frontend folder IS the whole app
+  # (Next.js UI + /api route handlers + uploads + AI analysis).
   # Docs: https://render.com/docs/blueprint-spec
   - type: web
     name: safereport
     runtime: node
     plan: free
-    rootDir: .            # repo root — NOT backend/ or frontend/
-    # npm workspaces: one install covers backend + frontend + server.ts deps
+    rootDir: .            # repo root — root scripts delegate to frontend/
+    # npm workspace: one install covers the frontend app and Prisma
     buildCommand: npm install && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
@@ -21,3 +22,9 @@ services:
         value: ''          # Render injects PORT automatically; if used, PORT must be 10000
       - key: NODE_ENV
         value: production
+      - key: AI_API_KEY
+        sync: false        # optional: BYO AI key instead of saving it in Settings → AI
+      - key: AI_PROVIDER
+        sync: false        # optional: openai | groq | openrouter | deepseek | gemini | anthropic | xai | mistral
+      - key: AI_MODEL
+        sync: false        # optional: model name override

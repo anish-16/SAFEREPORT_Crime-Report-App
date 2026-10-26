@@ -40,13 +40,13 @@ const STAGES = [
     icon: Upload,
     title: 'Attach evidence',
     tag: 'Photo / video ≤ 60 MB',
-    what: 'Drop in a photo or video. It is stored on this server only — never uploaded to any AI cloud, never shared with third parties, never exposed publicly.',
+    what: 'Drop in a photo or video. It is stored on this server only — never shared with third parties, never exposed publicly, and never sent to any AI service unless the operator explicitly configures a provider key (see the optional AI pass below).',
     details: [
       'Images: EXIF/GPS read for corroboration, blur & exposure checks, perceptual hash for duplicate detection.',
       'Videos: container metadata parsed, frames sampled locally when ffmpeg is present.',
       'Evidence URLs are served only through the app — public tracking never reveals them to strangers.',
     ],
-    privacy: 'Evidence stays on our storage. No external model ever sees your file.',
+    privacy: 'Evidence stays on our storage. No external model ever sees your file by default.',
   },
   {
     icon: Brain,
@@ -58,7 +58,7 @@ const STAGES = [
       'Auto-drafts your report fields: emergency/non-emergency, category, title and "what happened" — pre-filled the moment you attach media or type.',
       'Every drafted field is editable — you review, correct and approve before anything is submitted.',
     ],
-    privacy: 'All analysis is code running on this server. Zero calls to Gemini, OpenAI, or any model API.',
+    privacy: 'Analysis is code running on this server. With no key configured there are zero calls to Gemini, OpenAI, or any model API — the optional AI pass only runs if an operator adds their own key in Settings.',
   },
   {
     icon: Route,
@@ -82,7 +82,7 @@ const STAGES = [
       'Anyone with the report ID can check status on the public tracking page — status only.',
       'Your dashboard requires your login; it is the only place your submissions are listed.',
     ],
-    privacy: 'The account link exists solely so YOU can find your reports again — it is stripped from every public response.',
+    privacy: 'The tracking key exists solely so YOU can find your reports again — it never leaves this browser.',
   },
   {
     icon: CheckCircle2,
@@ -134,11 +134,11 @@ const MODULES = [
 const FAQ = [
   {
     q: 'Is my identity protected?',
-    a: 'Yes — all reports are anonymous and no personal data is written into the report itself. Your account is linked only so you can track your own submissions; that link is stripped from public tracking and never shown to other users.',
+    a: 'Yes — all reports are anonymous and no personal data is written into the report itself. Your reports hang off a private key kept in this browser, used only so you can track your own submissions; public tracking shows status only, never who filed it.',
   },
   {
     q: 'Can I track my report?',
-    a: 'Yes — you receive a unique tracking ID (SR-XXXX) on submit. Use it on the Track Report page, or sign in to see everything you have ever filed on your private dashboard.',
+    a: 'Yes — you receive a unique tracking ID (SR-XXXX) on submit. Use it on the Track Report page, or open My Reports to see everything this browser has ever filed.',
   },
   {
     q: 'Who receives my report?',
@@ -163,16 +163,29 @@ export default function HowItWorksPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       {/* hero */}
-      <div className="mb-10 text-center">
-        <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
-          <ShieldCheck className="h-3.5 w-3.5" /> End to end
-        </span>
-        <h1 className="text-3xl font-black tracking-tight sm:text-4xl">How It Works</h1>
+      <div className="mb-6 text-center">
+        <h1 className="text-[28px] font-semibold tracking-tight sm:text-[32px]">How It Works</h1>
         <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           Every process this website carries out with your report — from the tap you make as a
           witness, to the status update you receive back. Click any stage to inspect it.
         </p>
       </div>
+
+      {/* the world this is for: a city street after dark, no names attached */}
+      <figure className="mb-10 overflow-hidden rounded-2xl border border-border bg-card">
+        <div className="relative">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/street-night-poster.jpg"
+            alt="Night traffic on a city street — where most incidents get witnessed"
+            className="h-44 w-full object-cover sm:h-56"
+          />
+          <div aria-hidden className="absolute inset-0 bg-black/50" />
+          <figcaption className="absolute inset-x-0 bottom-0 p-4 text-step-body font-semibold text-white sm:p-5">
+            Most incidents are witnessed after dark — none of them need a name to be filed.
+          </figcaption>
+        </div>
+      </figure>
 
       {/* interactive stage walkthrough */}
       <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
@@ -186,22 +199,19 @@ export default function HowItWorksPage() {
                   'flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition',
                   active === i
                     ? 'border-primary/50 bg-primary/10 text-foreground'
-                    : 'border-white/10 bg-white/[0.03] text-muted-foreground hover:bg-white/[0.06]'
+                    : 'border-border bg-muted text-muted-foreground hover:bg-muted'
                 )}
               >
                 <span
                   className={cn(
                     'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                    active === i ? 'bg-primary/20 text-primary' : 'bg-white/[0.06]'
+                    active === i ? 'bg-primary/20 text-primary' : 'bg-muted'
                   )}
                 >
                   <s.icon className="h-4 w-4" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block font-mono text-[10px] font-black text-accent">
-                    STAGE {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="block whitespace-nowrap text-xs font-semibold lg:whitespace-normal">
+                  <span className="block whitespace-nowrap text-step-small font-semibold lg:whitespace-normal">
                     {s.title}
                   </span>
                 </span>
@@ -219,13 +229,13 @@ export default function HowItWorksPage() {
         {/* stage detail */}
         <div className="card-base animate-fade-up p-6" key={active}>
           <div className="flex items-start gap-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center text-primary">
               <StageIcon className="h-5 w-5" />
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-lg font-bold">{stage.title}</h2>
-                <span className="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+                <span className="text-step-small font-semibold text-primary">
                   {stage.tag}
                 </span>
               </div>
@@ -242,9 +252,9 @@ export default function HowItWorksPage() {
             ))}
           </ul>
 
-          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-success/25 bg-success/[0.06] p-3.5">
+          <div className="mt-4 flex items-start gap-2.5 border border-border bg-muted p-3.5">
             <Lock className="mt-0.5 h-4 w-4 shrink-0 text-success" />
-            <p className="text-xs leading-relaxed text-muted-foreground">
+            <p className="text-step-small leading-relaxed text-muted-foreground">
               <span className="font-bold text-foreground">Privacy at this stage: </span>
               {stage.privacy}
             </p>
@@ -252,14 +262,13 @@ export default function HowItWorksPage() {
         </div>
       </div>
 
-      {/* anonymity assurance block */}
-      <div className="card-base mt-10 animate-fade-up overflow-hidden border-success/30">
+      {/* anonymity assurance block */}          <div className="card-base mt-10 animate-fade-up overflow-hidden">
         <div className="grid gap-6 bg-success/[0.05] p-6 sm:grid-cols-[auto_1fr] sm:p-8">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-success/15 text-success">
+          <div className="flex h-16 w-16 items-center justify-center text-primary">
             <ShieldCheck className="h-8 w-8" />
           </div>
           <div>
-            <h2 className="text-xl font-black tracking-tight sm:text-2xl">
+            <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
               Completely anonymous — the login is only for you
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -271,11 +280,11 @@ export default function HowItWorksPage() {
             <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
               {[
                 'The report itself carries no name, email, phone or address.',
-                'Your account link is stripped from public tracking — strangers see status only.',
+                'The tracking key stays in this browser — public tracking shows status only.',
                 'Nobody else can open your profile or list your reports; your dashboard is private.',
                 'Authorities receive the incident details — never the identity of the reporter.',
               ].map((t) => (
-                <li key={t} className="flex gap-2 text-xs leading-relaxed text-muted-foreground">
+                <li key={t} className="flex gap-2 text-step-small leading-relaxed text-muted-foreground">
                   <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-success" />
                   {t}
                 </li>
@@ -288,13 +297,13 @@ export default function HowItWorksPage() {
       {/* emergency diary explainer */}
       <div className="card-base mt-6 animate-fade-up overflow-hidden border-accent/30">
         <div className="grid gap-6 bg-accent/[0.05] p-6 sm:grid-cols-[auto_1fr] sm:p-8">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/15 text-accent">
+          <div className="flex h-16 w-16 items-center justify-center text-primary">
             <PhoneCall className="h-8 w-8" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-xl font-black tracking-tight sm:text-2xl">Emergency Diary</h2>
-              <span className="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">Emergency Diary</h2>
+              <span className="text-step-small font-semibold text-primary">
                 Directory section
               </span>
             </div>
@@ -311,8 +320,8 @@ export default function HowItWorksPage() {
                 'Each row shows the authority, its number and a Call button.',
                 'Tapping Call shows a confirmation popup — only then does it hand you to your phone’s dialer. You place the call yourself; nothing ever dials automatically.',
               ].map((t, i) => (
-                <li key={t} className="flex gap-2 text-xs leading-relaxed text-muted-foreground">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/15 font-mono text-[9px] font-black text-accent">
+                <li key={t} className="flex gap-2 text-step-small leading-relaxed text-muted-foreground">
+                  <span className="mt-0.5 tabular-nums text-[10px] font-bold text-primary">
                     {i + 1}
                   </span>
                   {t}
@@ -333,10 +342,9 @@ export default function HowItWorksPage() {
       {/* engine internals */}
       <div className="mt-12">
         <div className="mb-6 text-center">
-          <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary">
+          <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-step-small font-semibold text-primary">
             <Brain className="h-3.5 w-3.5" /> Under the hood
-          </span>
-          <h2 className="text-2xl font-black tracking-tight">Inside the intelligence engine</h2>
+          </span>            <h2 className="text-2xl font-semibold tracking-tight">Inside the intelligence engine</h2>
           <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             A multi-stage analysis pipeline that lives entirely on this server. No Gemini key, no
             OpenAI key, no external AI API — deterministic, inspectable analysis code.
@@ -351,18 +359,15 @@ export default function HowItWorksPage() {
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <div className="flex items-start gap-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center text-primary">
                   <m.icon className="h-5 w-5" />
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-[10px] font-bold text-accent">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <h3 className="text-sm font-bold">{m.name}</h3>
+                    <h3 className="text-step-body font-bold">{m.name}</h3>
                   </div>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{m.what}</p>
-                  <p className="mt-2 rounded-lg bg-white/[0.04] px-3 py-2 text-xs">
+                  <p className="mt-1.5 text-step-body leading-relaxed text-muted-foreground">{m.what}</p>
+                  <p className="mt-2 rounded-lg bg-muted px-3 py-2 text-step-small">
                     <span className="font-semibold text-foreground">Produces: </span>
                     <span className="text-muted-foreground">{m.output}</span>
                   </p>
@@ -384,16 +389,15 @@ export default function HowItWorksPage() {
       </div>
 
       {/* FAQ */}
-      <div className="mt-12">
-        <h2 className="mb-5 flex items-center justify-center gap-2 text-xl font-black tracking-tight">
-          <HelpCircle className="h-5 w-5 text-accent" /> Frequently Asked Questions
+      <div className="mt-12">            <h2 className="mb-5 flex items-center justify-center gap-2 text-xl font-semibold tracking-tight">
+          <HelpCircle className="h-5 w-5 text-primary" /> Frequently Asked Questions
         </h2>
         <div className="space-y-3">
           {FAQ.map((f, i) => (
             <div key={f.q} className="card-base overflow-hidden">
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-semibold transition hover:bg-white/[0.03]"
+                className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-semibold transition hover:bg-muted"
                 aria-expanded={openFaq === i}
               >
                 {f.q}
@@ -405,7 +409,7 @@ export default function HowItWorksPage() {
                 />
               </button>
               {openFaq === i && (
-                <p className="animate-fade-up border-t border-white/10 px-5 py-4 text-sm leading-relaxed text-muted-foreground">
+                <p className="animate-fade-up mt-2 px-1 py-1 text-step-body leading-relaxed text-muted-foreground">
                   {f.a}
                 </p>
               )}

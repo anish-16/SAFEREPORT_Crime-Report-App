@@ -15,9 +15,10 @@ import {
   Paperclip,
   FileText,
   Lock,
+  Route,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
-import { api, hasSession } from '@/lib/api';
+import { api } from '@/lib/api';
 import type { AnalysisResult, ReportType } from '@/lib/types';
 import { AnalysisPanel } from '@/components/analysis-panel';
 import { LocationInput } from '@/components/location-input';
@@ -41,7 +42,7 @@ interface AutoFill {
 }
 
 export default function SubmitReportPage() {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
   const router = useRouter();
 
   const [title, setTitle] = useState('');
@@ -73,13 +74,21 @@ export default function SubmitReportPage() {
   const [error, setError] = useState('');
   const [doneId, setDoneId] = useState<string | null>(null);
 
+  /** AI provider config (open endpoint): when a key exists, enrich the draft. */
+  const [aiCfg, setAiCfg] = useState<{ hasKey: boolean; model: string; providerLabel: string } | null>(null);
   useEffect(() => {
-    if (!loading && !hasSession()) router.replace('/auth/signin');
-  }, [loading, router]);
+    api
+      .get<{ settings: { hasKey: boolean; model: string; providerLabel: string } }>('/ai/settings')
+      .then(({ settings }) => setAiCfg(settings))
+      .catch(() => setAiCfg(null));
+  }, []);
 
-  // live analysis (debounced) whenever inputs settle
+  /** content already sent through the AI pass, so each draft is billed once */
+  const aiDoneFor = useRef('');
+  const aiRunning = useRef(false);
+
   useEffect(() => {
-    if (!hasSession()) return;
+    // live analysis (debounced) whenever inputs settle — no login required
     if (title.trim().length < 4 && description.trim().length < 15 && !file) {
       setAnalysis(null);
       return;
@@ -94,8 +103,14 @@ export default function SubmitReportPage() {
         if (location.trim()) form.append('location', location.trim());
         if (file) form.append('media', file);
         const { analysis } = await api.postForm<{ analysis: AnalysisResult }>('/reports/analyze', form);
-        setAnalysis(analysis);
-
+        // a local refresh must not erase the AI verdict already shown for this
+        // same draft (the location field often settles after the AI pass ran)
+        setAnalysis((prev) => {
+          if (!prev || (!prev.ai && !prev.aiError)) return analysis;
+          const k = `${title}\u0000${description}\u0000${location}\u0000${file?.name ?? ''}`;
+          if (aiDoneFor.current !== k) return analysis;
+          return { ...analysis, ai: prev.ai, aiError: prev.aiError };
+        });
         // auto-fill any field the reporter hasn't touched yet
         const s = analysis.suggestions;
         if (s) {
@@ -129,6 +144,56 @@ export default function SubmitReportPage() {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, description, location, file]);
+
+  /**
+   * AI enrichment: once the draft settles (3.5s without typing) and an API
+   * key is configured in Settings → AI, the chosen model reviews the report
+   * and returns a refined classification. Each distinct draft is sent once.
+   */
+  useEffect(() => {
+
+    if (!aiCfg?.hasKey) return;
+    if (title.trim().length < 8 || description.trim().length < 30) return;
+    const key = `${title}\u0000${description}\u0000${location}\u0000${file?.name ?? ''}`;
+    if (aiDoneFor.current === key) return;
+
+    const t = setTimeout(async () => {
+      if (aiRunning.current || aiDoneFor.current === key) return;
+      aiRunning.current = true;
+      try {
+        const form = new FormData();
+        form.append('title', title);
+        form.append('description', description);
+        if (location.trim()) form.append('location', location.trim());
+        if (file) form.append('media', file);
+        const { analysis } = await api.postForm<{ analysis: AnalysisResult }>(
+          '/reports/analyze?ai=1',
+          form
+        );
+        aiDoneFor.current = key;
+        setAnalysis(analysis);
+
+        // fields the reporter never touched may be upgraded to the AI draft
+        const s = analysis.suggestions;
+        if (s && analysis.ai) {
+          if (!locked.current.category && s.category && s.category !== category) {
+            setCategory(s.category);
+            setAuto((a) => ({ ...a, category: true }));
+          }
+          if (!locked.current.type && s.type && s.type !== type) {
+            setType(s.type);
+            setAuto((a) => ({ ...a, type: true }));
+          }
+        }
+      } catch {
+        // AI pass failed — the local analysis already on screen stays put
+      } finally {
+        aiRunning.current = false;
+      }
+    }, 3500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, description, location, file, aiCfg]);
 
   function edit<K extends keyof AutoFill>(key: K, apply: () => void) {
     locked.current[key] = true;
@@ -191,15 +256,16 @@ export default function SubmitReportPage() {
           <p className="mt-2 text-sm text-muted-foreground">
             Save this report ID — you can use it to track progress without an account:
           </p>
-          <p className="mt-4 rounded-xl border border-primary/30 bg-primary/10 py-3 font-mono text-lg font-bold text-primary">
+          <p className="mt-4 rounded-xl border border-primary/30 bg-primary/10 py-3 tabular-nums text-lg font-bold text-primary">
             {doneId}
           </p>
-          <div className="mt-4 flex items-start gap-2 rounded-xl border border-success/25 bg-success/[0.06] p-3 text-left text-xs leading-relaxed text-muted-foreground">
+          <div className="mt-4 flex items-start gap-2 rounded-xl border border-success/25 bg-success/[0.06] p-3 text-left text-step-small leading-relaxed text-muted-foreground">
             <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-success" />
             <span>
               Filed <span className="font-semibold text-foreground">anonymously</span> — no name,
-              email or phone was written into the report. Your account is linked only so{' '}
-              <span className="font-semibold text-foreground">you</span> can track it.
+              email or phone was written into the report. It already shows up under{' '}
+              <span className="font-semibold text-foreground">My Reports</span> on this browser, so
+              you can follow every status change without an account.
             </span>
           </div>
           <div className="mt-6 flex justify-center gap-3">
@@ -211,7 +277,7 @@ export default function SubmitReportPage() {
             </button>
             <button
               onClick={() => router.push('/dashboard')}
-              className="rounded-xl border border-white/15 px-5 py-2.5 text-sm font-semibold"
+              className="rounded-xl border border-border px-5 py-2.5 text-sm font-semibold"
             >
               My dashboard
             </button>
@@ -231,25 +297,23 @@ export default function SubmitReportPage() {
       {/* header */}
       <div className="mb-7">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-success">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-step-small font-bold  text-success">
             <Lock className="h-3 w-3" /> Anonymous Intake
           </span>
-          <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] text-muted-foreground">
+          <span className="rounded-full border border-border bg-muted px-3 py-1 tabular-nums text-step-small text-muted-foreground">
             FORM SR-F2 · INCIDENT REPORT
           </span>
         </div>
-        <h1 className="mt-4 text-2xl font-black tracking-tight sm:text-3xl">
-          File an incident report
-        </h1>
+        <h1 className="text-[24px] font-semibold tracking-tight">File an incident report</h1>
         <div className="mt-4 flex items-start gap-3 rounded-2xl border border-accent/25 bg-accent/[0.06] p-4 text-sm leading-relaxed text-muted-foreground">
-          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
           <p>
-            Your name and personal details are{' '}
-            <span className="font-semibold text-foreground">never written into this report</span>.
-            You are signed in as{' '}
-            <span className="font-semibold text-foreground">{user?.email}</span> only so{' '}
-            <span className="font-semibold text-foreground">you</span> can track your own
-            submissions — nobody else can see them, and the public never sees who filed.
+            No account needed — submit straight away. Your name and personal details are{' '}
+            <span className="font-semibold text-foreground">never written into this report</span>;
+            it is tracked by a private key kept in this browser, so{' '}
+            <span className="font-semibold text-foreground">only you</span> see it under My
+            Reports. Your history stays in this browser under a private key only this device
+            holds.
           </p>
         </div>
       </div>
@@ -266,13 +330,12 @@ export default function SubmitReportPage() {
 
           {/* 01 — classification */}
           <section>
-            <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] font-black text-primary">01</span>
-                <h2 className="text-xs font-bold uppercase tracking-widest">Classification</h2>
+                <h2 className="text-step-body font-semibold">Classification</h2>
               </div>
               {auto.type && (
-                <span className="flex items-center gap-1 rounded-md bg-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+                <span className="flex items-center gap-1 rounded-md bg-accent/10 px-2 py-0.5 text-step-small font-bold  text-primary">
                   <Sparkles className="h-3 w-3" /> AI-filled · editable
                 </span>
               )}
@@ -289,11 +352,11 @@ export default function SubmitReportPage() {
                       ? t === 'EMERGENCY'
                         ? 'rounded-xl border border-destructive bg-destructive/15 px-4 py-3 text-sm font-bold text-destructive transition'
                         : 'rounded-xl border border-primary bg-primary/15 px-4 py-3 text-sm font-bold text-primary transition'
-                      : 'rounded-xl border border-white/10 px-4 py-3 text-sm text-muted-foreground transition hover:bg-white/[0.04]'
+                      : 'rounded-xl border border-border px-4 py-3 text-sm text-muted-foreground transition hover:bg-muted'
                   }
                 >
-                  <span className="block">{t === 'EMERGENCY' ? '🚨 Emergency' : '📋 Non-emergency'}</span>
-                  <span className="mt-0.5 block text-[10px] font-medium opacity-70">
+                  <span className="block">{t === 'EMERGENCY' ? 'Emergency' : 'Non-emergency'}</span>
+                  <span className="mt-0.5 block text-step-small font-medium opacity-70">
                     {t === 'EMERGENCY' ? 'Immediate response required' : 'General report'}
                   </span>
                 </button>
@@ -301,10 +364,10 @@ export default function SubmitReportPage() {
             </div>
 
             <div className="mt-4">
-              <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+              <label className="mb-1.5 flex items-center gap-2 text-step-small font-medium text-muted-foreground">
                 Incident category
                 {auto.category && (
-                  <span className="flex items-center gap-1 rounded-md bg-accent/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+                  <span className="flex items-center gap-1 rounded-md bg-accent/10 px-1.5 py-0.5 text-step-small font-bold  text-primary">
                     <Sparkles className="h-2.5 w-2.5" /> AI-classified · editable
                   </span>
                 )}
@@ -326,7 +389,7 @@ export default function SubmitReportPage() {
                   </option>
                 ))}
               </select>
-              <p className="mt-1 text-[11px] text-muted-foreground">
+              <p className="mt-1 text-step-small text-muted-foreground">
                 Routed to:{' '}
                 <span className="font-semibold text-foreground/80">{authority}</span>
                 {analysis?.suggestions && (
@@ -348,19 +411,18 @@ export default function SubmitReportPage() {
 
           {/* 02 — details */}
           <section>
-            <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] font-black text-primary">02</span>
-                <h2 className="text-xs font-bold uppercase tracking-widest">What happened</h2>
+                <h2 className="text-step-body font-semibold">What happened</h2>
               </div>
               {auto.title && (
-                <span className="flex items-center gap-1 rounded-md bg-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+                <span className="flex items-center gap-1 rounded-md bg-accent/10 px-2 py-0.5 text-step-small font-bold  text-primary">
                   <Sparkles className="h-3 w-3" /> AI-filled · editable
                 </span>
               )}
             </div>
 
-            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Title</label>
+            <label className="mb-1.5 block text-step-small font-medium text-muted-foreground">Title</label>
             <input
               required
               minLength={4}
@@ -370,11 +432,11 @@ export default function SubmitReportPage() {
               placeholder="e.g. Phone snatched near metro station"
             />
 
-            <label className="mb-1.5 mt-4 block text-xs font-medium text-muted-foreground">
+            <label className="mb-1.5 mt-4 block text-step-small font-medium text-muted-foreground">
               Description{' '}
               <span className="text-muted-foreground/60">(min 15 chars)</span>
               {auto.description && (
-                <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-accent/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+                <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-accent/10 px-1.5 py-0.5 text-step-small font-bold  text-primary">
                   <Sparkles className="h-2.5 w-2.5" /> AI-filled · editable
                 </span>
               )}
@@ -388,19 +450,18 @@ export default function SubmitReportPage() {
               className="input-base resize-y"
               placeholder="Include time, place, vehicle plates, description of suspects, direction they fled…"
             />
-            <p className="mt-1 text-[11px] text-muted-foreground">
+            <p className="mt-1 text-step-small text-muted-foreground">
               {description.trim().length} characters
             </p>
           </section>
 
           {/* 03 — location */}
           <section>
-            <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] font-black text-primary">03</span>
-                <h2 className="text-xs font-bold uppercase tracking-widest">Location</h2>
+                <h2 className="text-step-body font-semibold">Location</h2>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              <span className="text-step-small font-bold  text-muted-foreground">
                 Auto-detected
               </span>
             </div>
@@ -413,17 +474,16 @@ export default function SubmitReportPage() {
 
           {/* 04 — evidence */}
           <section>
-            <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] font-black text-primary">04</span>
-                <h2 className="text-xs font-bold uppercase tracking-widest">Evidence</h2>
+                <h2 className="text-step-body font-semibold">Evidence</h2>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              <span className="text-step-small font-bold  text-muted-foreground">
                 Photo / video · max 60 MB
               </span>
             </div>
             {file ? (
-              <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3">
+              <div className="flex items-center gap-3 rounded-xl border border-border bg-muted p-3">
                 {file.type.startsWith('image/') ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={URL.createObjectURL(file)} alt="preview" className="h-14 w-14 rounded-lg object-cover" />
@@ -436,7 +496,7 @@ export default function SubmitReportPage() {
                 )}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-step-small text-muted-foreground">
                     {(file.size / 1024 / 1024).toFixed(1)} MB ·{' '}
                     {analyzing ? 'analyzing…' : 'analyzed — fields auto-filled above'}
                   </p>
@@ -444,17 +504,17 @@ export default function SubmitReportPage() {
                 <button
                   type="button"
                   onClick={() => onPickFile(null)}
-                  className="rounded-lg p-1.5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                  className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                   aria-label="Remove file"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
             ) : (
-              <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-white/20 bg-white/[0.02] px-4 py-8 text-center transition hover:border-primary/50 hover:bg-primary/[0.04]">
+              <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-border bg-muted px-4 py-8 text-center transition hover:border-primary/50 hover:bg-primary/[0.04]">
                 <Upload className="h-6 w-6 text-muted-foreground" />
                 <span className="text-sm font-medium">Drop a file or click to browse</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-step-small text-muted-foreground">
                   Attach evidence — the engine fills your report fields from it
                 </span>
                 <input
@@ -488,12 +548,12 @@ export default function SubmitReportPage() {
         <div className="lg:sticky lg:top-24 lg:self-start">
           {/* correlated preview of the actual report */}
           <div className="card-base mb-3 overflow-hidden">
-            <div className="flex items-center justify-between border-b border-white/10 bg-primary/[0.06] px-4 py-3">
+            <div className="flex items-center justify-between bg-primary/[0.06] px-4 py-3">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <FileText className="h-4 w-4 text-primary" />
                 Report preview
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="text-step-small font-semibold text-muted-foreground">
                 Live · updates as you type
               </span>
             </div>
@@ -501,15 +561,15 @@ export default function SubmitReportPage() {
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   className={cn(
-                    'rounded-md px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide',
+                    'rounded-md px-2 py-0.5 text-step-small font-bold ',
                     type === 'EMERGENCY'
                       ? 'bg-destructive text-destructive-foreground'
                       : 'bg-primary text-primary-foreground'
                   )}
                 >
-                  {type === 'EMERGENCY' ? '🚨 Emergency' : '📋 Non-emergency'}
+                  {type === 'EMERGENCY' ? 'Emergency' : 'Non-emergency'}
                 </span>
-                <span className="rounded-md bg-white/[0.07] px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+                <span className="rounded-md bg-muted px-2 py-0.5 text-step-small font-semibold text-muted-foreground">
                   {category || 'Uncategorized'}
                 </span>
                 {analysis && <PriorityBadge priority={analysis.triage.priority} />}
@@ -525,52 +585,51 @@ export default function SubmitReportPage() {
                 </p>
                 <p
                   className={cn(
-                    'mt-1.5 line-clamp-3 text-xs leading-relaxed',
+                    'mt-1.5 line-clamp-3 text-step-small leading-relaxed',
                     description ? 'text-muted-foreground' : 'text-muted-foreground/50 italic'
                   )}
                 >
                   {description || 'The description will mirror here as you write it…'}
                 </p>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-step-small text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5 shrink-0" />
                 {location || <span className="italic opacity-60">Location auto-detecting…</span>}
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-step-small text-muted-foreground">
                 <Paperclip className="h-3.5 w-3.5 shrink-0" />
                 {file ? file.name : <span className="italic opacity-60">No evidence attached</span>}
               </div>
-              <div className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-[11px] text-muted-foreground">
+              <div className="rounded-lg border border-border bg-muted px-3 py-2 text-step-small text-muted-foreground">
                 <span className="font-semibold text-foreground/80">Routed to: </span>
                 {authority}
               </div>
-              <div className="flex items-center justify-between border-t border-white/10 pt-2.5 text-[11px] text-muted-foreground">
+              <div className="mt-2 flex items-center justify-between text-step-small text-muted-foreground">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-success" />
                   Anonymous — no identity fields
                 </span>
-                <span className="font-mono">ID: assigned on submit</span>
+                <span className="tabular-nums">ID: assigned on submit</span>
               </div>
             </div>
           </div>
 
-          <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-            <Brain className="h-4 w-4 text-primary" />
-            Live analysis
-            {analyzing && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
-          </div>
-
           {analysisErr && (
-            <div className="card-base p-4 text-sm text-destructive">{analysisErr}</div>
+            <div className="card-base mt-3 flex items-center gap-2 p-4 text-sm text-destructive">{analysisErr}</div>
           )}
 
           {analysis ? (
-            <AnalysisPanel analysis={analysis} />
+            <div className="mt-3">
+              <AnalysisPanel analysis={analysis} />
+            </div>
           ) : (
-            <div className="card-base flex flex-col items-center gap-2 p-8 text-center">
-              <Brain className="h-8 w-8 text-muted-foreground/50" />
+            <div className="card-base mt-3 flex flex-col items-center gap-2 p-8 text-center">
+              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                Live analysis
+                {analyzing && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
+              </div>
               <p className="text-sm font-medium">{analyzing ? 'Analyzing…' : 'Waiting for input'}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-step-small text-muted-foreground">
                 Attach a photo or video — or start typing — and the engine classifies the incident
                 and drafts your report fields for you to review. All processing runs on this
                 machine.
@@ -578,10 +637,36 @@ export default function SubmitReportPage() {
             </div>
           )}
 
-          <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 text-[11px] leading-relaxed text-muted-foreground">
-            <strong className="text-foreground">No cloud AI.</strong> Classification uses a local
-            lexicon, images are measured for blur/exposure/EXIF, and videos are probed with a local
-            media stack — nothing is sent to Gemini, OpenAI, or any external model API.
+          <div className="mt-3 card-base p-4">
+            <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+              <Route className="h-4 w-4 text-primary" />
+              What happens next
+            </p>
+            <ol className="space-y-3">
+              {[
+                ['You file it', 'You get a report ID and a private tracking key, kept only in this browser.'],
+                ['The engine triages it', 'Priority band, evidence score and the right authority — seconds, on this machine.'],
+                ['It reaches an authority', 'The report lands in the review queue with your anonymous description intact.'],
+                ['You follow the timeline', 'Pending → In progress → Resolved updates appear on your tracking page.'],
+              ].map(([t, d], i) => (
+                <li key={t} className="flex gap-3">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-border bg-muted text-step-small font-bold tabular-nums text-primary">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="text-step-small font-semibold">{t}</p>
+                    <p className="mt-0.5 text-step-small leading-relaxed text-muted-foreground">{d}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="mt-3 rounded-xl border border-border bg-muted p-3 text-step-small leading-relaxed text-muted-foreground">
+            <strong className="text-foreground">Local by default, AI when you add a key.</strong>{' '}
+            Classification runs on this machine: a local lexicon, image blur / exposure / EXIF
+            measurement and local media probing. Only when an AI key is saved under AI settings
+            does that model read the incident text and never your identity.
           </div>
         </div>
       </div>

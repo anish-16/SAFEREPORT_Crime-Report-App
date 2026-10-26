@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
@@ -37,8 +36,10 @@ export default function SignInPage() {
             <ShieldCheck className="h-5 w-5" />
           </span>
           <div>
-            <h1 className="text-xl font-bold">Welcome back</h1>
-            <p className="text-xs text-muted-foreground">Sign in to track your reports</p>
+            <h1 className="text-xl font-bold">Operator sign-in</h1>
+            <p className="text-step-small text-muted-foreground">
+              For moderators and administrators only — reporters never need this
+            </p>
           </div>
         </div>
 
@@ -50,7 +51,7 @@ export default function SignInPage() {
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Email</label>
+            <label className="mb-1.5 block text-step-small font-medium text-muted-foreground">Email</label>
             <input
               type="email"
               required
@@ -62,7 +63,7 @@ export default function SignInPage() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Password</label>
+            <label className="mb-1.5 block text-step-small font-medium text-muted-foreground">Password</label>
             <div className="relative">
               <input
                 type={show ? 'text' : 'password'}
@@ -92,11 +93,8 @@ export default function SignInPage() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          No account?{' '}
-          <Link href="/auth/signup" className="font-semibold text-accent hover:underline">
-            Create one
-          </Link>
+        <p className="mt-6 text-center text-step-small text-muted-foreground">
+          Reporters don&apos;t need an account — file a report straight away.
         </p>
       </div>
     </div>

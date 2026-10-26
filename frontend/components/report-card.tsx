@@ -11,9 +11,9 @@ export function ReportCard({ report, href }: { report: Report; href?: string }) 
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold text-accent">{report.reportId}</span>
-            <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
-              {report.type.replace('_', ' ').toLowerCase()}
+            <span className="tabular-nums text-step-small font-bold text-primary">{report.reportId}</span>
+            <span className="text-step-small  text-muted-foreground">
+              {report.type === 'EMERGENCY' ? 'emergency' : 'non-emergency'}
             </span>
           </div>
           <p className="mt-1 truncate text-sm font-semibold group-hover:text-primary">{report.title}</p>
@@ -21,12 +21,12 @@ export function ReportCard({ report, href }: { report: Report; href?: string }) 
         <StatusBadge status={report.status} />
       </div>
 
-      <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{report.description}</p>
+      <p className="mt-2 line-clamp-2 text-step-small leading-relaxed text-muted-foreground">{report.description}</p>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
+      <div className="mt-3 flex flex-wrap items-center gap-3 text-step-small text-muted-foreground">
         <span>{formatDate(report.createdAt)}</span>
         {report.category && (
-          <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5">{report.category}</span>
+          <span className="rounded-md bg-muted px-1.5 py-0.5">{report.category}</span>
         )}
         {report.location && (
           <span className="flex items-center gap-1">

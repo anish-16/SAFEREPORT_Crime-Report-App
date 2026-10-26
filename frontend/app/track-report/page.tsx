@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import type { Report } from '@/lib/types';
 import { StatusBadge } from '@/components/badges';
 import { AnalysisPanel } from '@/components/analysis-panel';
-import { formatDate } from '@/lib/utils';
+import { formatDate, labelize } from '@/lib/utils';
 
 function TrackForm() {
   const params = useSearchParams();
@@ -51,7 +51,7 @@ function TrackForm() {
       <div className="mb-8 text-center">
         <h1 className="text-2xl font-bold sm:text-3xl">Track a report</h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
-          Enter the report ID (e.g. <span className="font-mono text-accent">SR-1A2B3C4D</span>) to see
+          Enter the report ID (e.g. <span className="tabular-nums text-primary">SR-1A2B3C4D</span>) to see
           its live status — no login needed.
         </p>
       </div>
@@ -68,7 +68,7 @@ function TrackForm() {
           <input
             value={id}
             onChange={(e) => setId(e.target.value)}
-            className="input-base pl-10 font-mono uppercase"
+            className="input-base pl-10 tabular-nums uppercase"
             placeholder="SR-XXXXXXXX"
           />
         </div>
@@ -93,7 +93,7 @@ function TrackForm() {
           <div className="card-base p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <span className="font-mono text-sm font-bold text-accent">{report.reportId}</span>
+                <span className="tabular-nums text-sm font-bold text-primary">{report.reportId}</span>
                 <h2 className="mt-1 text-lg font-bold">{report.title}</h2>
               </div>
               <StatusBadge status={report.status} />
@@ -101,7 +101,7 @@ function TrackForm() {
             <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
               {report.description}
             </p>
-            <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
+            <div className="mt-4 flex flex-wrap gap-4 text-step-small text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <Calendar className="h-3.5 w-3.5" /> {formatDate(report.createdAt)}
               </span>
@@ -110,12 +110,14 @@ function TrackForm() {
                   <MapPin className="h-3.5 w-3.5" /> {report.location}
                 </span>
               )}
-              <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5">{report.type.replace('_', ' ')}</span>
-              {report.category && <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5">{report.category}</span>}
+              <span className="rounded-md bg-muted px-1.5 py-0.5">
+                {report.type === 'EMERGENCY' ? 'Emergency' : 'Non-emergency'}
+              </span>
+              {report.category && <span className="rounded-md bg-muted px-1.5 py-0.5">{report.category}</span>}
             </div>
 
             {report.mediaUrl && (
-              <div className="mt-4 overflow-hidden rounded-xl border border-white/10">
+              <div className="mt-4 overflow-hidden rounded-xl border border-border">
                 {report.mediaType === 'image' ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={report.mediaUrl} alt="Evidence" className="max-h-96 w-full object-contain bg-black/40" />
@@ -126,23 +128,35 @@ function TrackForm() {
             )}
           </div>
 
-          {/* timeline */}
+          {/* timeline: stamped rows, no connecting rule */}
           <div className="card-base p-5">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-muted-foreground">Status timeline</h3>
-            <ol className="relative space-y-5 border-l border-white/10 pl-5">
+            <h3 className="mb-4 text-step-body font-semibold">Status timeline</h3>
+            <ol className="space-y-2">
               {timeline.map((ev, i) => (
-                <li key={ev.id} className="relative">
+                <li
+                  key={ev.id}
+                  className={`flex gap-3 px-3 py-3 ${
+                    i === timeline.length - 1 ? 'bg-muted' : ''
+                  }`}
+                >
                   <span
-                    className={`absolute -left-[27px] top-1 h-3 w-3 rounded-full border-2 border-background ${
-                      i === timeline.length - 1 ? 'bg-primary' : 'bg-muted-foreground/50'
+                    aria-hidden
+                    className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${
+                      i === timeline.length - 1 ? 'bg-primary' : 'bg-border'
                     }`}
                   />
-                  <p className="text-sm font-semibold">
-                    {ev.to.replace('_', ' ')}
-                    {i === 0 && <span className="ml-2 text-[10px] font-normal uppercase text-muted-foreground">initial</span>}
-                  </p>
-                  {ev.note && <p className="mt-0.5 text-xs text-muted-foreground">{ev.note}</p>}
-                  <p className="mt-0.5 text-[11px] text-muted-foreground/70">{formatDate(ev.createdAt)}</p>
+                  <div className="min-w-0">
+                    <p className="text-step-body font-semibold">
+                      {labelize(ev.to)}
+                      {i === 0 && (
+                        <span className="ml-2 text-step-small font-normal text-muted-foreground">
+                          initial
+                        </span>
+                      )}
+                    </p>
+                    {ev.note && <p className="mt-0.5 text-step-small text-muted-foreground">{ev.note}</p>}
+                    <p className="mt-0.5 text-step-small text-muted-foreground">{formatDate(ev.createdAt)}</p>
+                  </div>
                 </li>
               ))}
             </ol>

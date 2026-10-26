@@ -35,11 +35,11 @@ const KIND_META: Record<Authority['kind'], { label: string; classes: string }> =
   Ambulance: { label: 'Ambulance', classes: 'bg-emerald-500/15 text-emerald-400' },
   Women: { label: 'Women', classes: 'bg-pink-500/15 text-pink-400' },
   Child: { label: 'Child', classes: 'bg-amber-500/15 text-amber-400' },
-  Cyber: { label: 'Cyber', classes: 'bg-violet-500/15 text-violet-400' },
+  Cyber: { label: 'Cyber', classes: 'bg-primary/15 text-primary' },
   Disaster: { label: 'Disaster', classes: 'bg-orange-500/15 text-orange-400' },
   Road: { label: 'Road', classes: 'bg-yellow-500/15 text-yellow-400' },
   Crisis: { label: 'Crisis', classes: 'bg-teal-500/15 text-teal-400' },
-  Other: { label: 'Emergency', classes: 'bg-white/10 text-muted-foreground' },
+  Other: { label: 'Emergency', classes: 'bg-muted text-muted-foreground' },
 };
 
 const EXAMPLE_CITIES = ['Bengaluru', 'Delhi', 'Mumbai', 'Dubai', 'London', 'Singapore'];
@@ -47,25 +47,25 @@ const EXAMPLE_CITIES = ['Bengaluru', 'Delhi', 'Mumbai', 'Dubai', 'London', 'Sing
 function AuthorityRow({ a, onCall }: { a: Authority; onCall: (a: Authority) => void }) {
   const meta = KIND_META[a.kind];
   return (
-    <li className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:border-white/20 hover:bg-white/[0.05]">
+    <li className="flex items-center gap-3 rounded-xl border border-border bg-muted px-4 py-3 transition hover:border-border hover:bg-muted">
       <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-lg', meta.classes)}>
         <Phone className="h-4 w-4" />
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <p className="truncate text-sm font-semibold">{a.name}</p>
-          <span className={cn('rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide', meta.classes)}>
+          <span className={cn('rounded px-1.5 py-0.5 text-step-small font-bold ', meta.classes)}>
             {meta.label}
           </span>
         </div>
-        {a.note && <p className="mt-0.5 truncate text-xs text-muted-foreground">{a.note}</p>}
+        {a.note && <p className="mt-0.5 truncate text-step-small text-muted-foreground">{a.note}</p>}
       </div>
-      <span className="hidden font-mono text-sm font-bold tabular-nums text-foreground/90 sm:block">
+      <span className="hidden tabular-nums text-sm font-bold tabular-nums text-foreground/90 sm:block">
         {a.number}
       </span>
       <button
         onClick={() => onCall(a)}
-        className="flex shrink-0 items-center gap-1.5 rounded-lg bg-success px-3.5 py-2 text-xs font-bold text-success-foreground transition hover:brightness-110"
+        className="flex shrink-0 items-center gap-1.5 rounded-lg bg-success px-3.5 py-2 text-step-small font-bold text-success-foreground transition hover:brightness-110"
       >
         <PhoneCall className="h-3.5 w-3.5" />
         Call
@@ -138,10 +138,10 @@ export default function EmergencyDiaryPage() {
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
       {/* header */}
       <div className="mb-8 text-center">
-        <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
+        <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-step-small font-semibold text-primary">
           <PhoneCall className="h-3.5 w-3.5" /> Emergency Diary
         </span>
-        <h1 className="text-3xl font-black tracking-tight sm:text-4xl">
+        <h1 className="text-[28px] font-semibold tracking-tight sm:text-[32px]">
           Every emergency number for your city
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
@@ -157,7 +157,7 @@ export default function EmergencyDiaryPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           {/* city input */}
           <div ref={boxRef} className="relative">
-            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+            <label className="mb-1.5 block text-step-small font-medium text-muted-foreground">
               Type your city
             </label>
             <div className="relative">
@@ -178,7 +178,7 @@ export default function EmergencyDiaryPage() {
               />
             </div>
             {open && suggestions.length > 0 && (
-              <ul className="absolute left-0 right-0 top-full z-30 mt-1 max-h-56 overflow-auto rounded-xl border border-white/10 bg-card/95 shadow-2xl backdrop-blur-xl">
+              <ul data-taste-skill-ignore="a real overlay menu keeps its lift" className="absolute left-0 right-0 top-full z-30 mt-1 max-h-56 overflow-auto border border-border bg-card shadow-2xl">
                 {suggestions.map((c, i) => {
                   const ctry = countryByCode(c.country);
                   return (
@@ -188,12 +188,12 @@ export default function EmergencyDiaryPage() {
                         onClick={() => pickCity(c)}
                         className={cn(
                           'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm transition',
-                          active === i ? 'bg-primary/10' : 'hover:bg-white/[0.05]'
+                          active === i ? 'bg-primary/10' : 'hover:bg-muted'
                         )}
                       >
                         <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
                         <span className="flex-1">{c.name}</span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-step-small text-muted-foreground">
                           {ctry?.flag} {ctry?.name}
                         </span>
                       </button>
@@ -203,7 +203,7 @@ export default function EmergencyDiaryPage() {
               </ul>
             )}
             {!city && suggestions.length === 0 && cityQuery.trim().length >= 3 && (
-              <p className="mt-1.5 text-[11px] text-muted-foreground">
+              <p className="mt-1.5 text-step-small text-muted-foreground">
                 Not in the bundled city list — pick your country manually on the right.
               </p>
             )}
@@ -211,7 +211,7 @@ export default function EmergencyDiaryPage() {
 
           {/* country (auto-selected) */}
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+            <label className="mb-1.5 block text-step-small font-medium text-muted-foreground">
               Country <span className="opacity-60">(auto-selected from your city)</span>
             </label>
             <div className="relative">
@@ -231,7 +231,7 @@ export default function EmergencyDiaryPage() {
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             </div>
             {city && country && city.country === country.code && (
-              <p className="mt-1.5 flex items-center gap-1.5 text-[11px] font-medium text-success">
+              <p className="mt-1.5 flex items-center gap-1.5 text-step-small font-medium text-success">
                 <ShieldCheck className="h-3 w-3" /> Auto-selected from “{city.name}”
               </p>
             )}
@@ -239,7 +239,7 @@ export default function EmergencyDiaryPage() {
         </div>
 
         {!country && (
-          <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/10 pt-4 text-xs text-muted-foreground">
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-step-small text-muted-foreground">
             <span>Try:</span>
             {EXAMPLE_CITIES.map((name) => (
               <button
@@ -248,7 +248,7 @@ export default function EmergencyDiaryPage() {
                   const c = CITIES.find((x) => x.name === name);
                   if (c) pickCity(c);
                 }}
-                className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 transition hover:border-accent/40 hover:text-accent"
+                className="rounded-full border border-border bg-muted px-3 py-1 transition hover:border-accent/40 hover:text-accent"
               >
                 {name}
               </button>
@@ -260,11 +260,11 @@ export default function EmergencyDiaryPage() {
       {/* authority list */}
       {!country ? (
         <div className="card-base flex flex-col items-center gap-3 py-16 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10 text-primary">
             <MapPin className="h-6 w-6" />
           </span>
           <p className="text-sm font-semibold">Type your city to open your diary</p>
-          <p className="max-w-sm text-xs leading-relaxed text-muted-foreground">
+          <p className="max-w-sm text-step-small leading-relaxed text-muted-foreground">
             The country selects itself from what you type, then every police, fire, ambulance and
             helpline number that serves you appears below — bundled offline, no API needed.
           </p>
@@ -273,7 +273,7 @@ export default function EmergencyDiaryPage() {
         <div className="space-y-6">
           {extras.length > 0 && city && (
             <section>
-              <h2 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-accent">
+              <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-primary">
                 <MapPin className="h-4 w-4" /> City desks — {city.name}
               </h2>
               <ul className="space-y-2.5">
@@ -285,7 +285,7 @@ export default function EmergencyDiaryPage() {
           )}
 
           <section>
-            <h2 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-muted-foreground">
+            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
               <ShieldCheck className="h-4 w-4 text-primary" /> National authorities —{' '}
               <span className="text-foreground">
                 {country.flag} {country.name}
@@ -298,7 +298,7 @@ export default function EmergencyDiaryPage() {
             </ul>
           </section>
 
-          <div className="flex items-start gap-2.5 rounded-xl border border-warning/25 bg-warning/[0.06] p-4 text-xs leading-relaxed text-muted-foreground">
+          <div className="flex items-start gap-2.5 rounded-xl border border-warning/25 bg-warning/[0.06] p-4 text-step-small leading-relaxed text-muted-foreground">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
             <span>
               Numbers are standard national/regional helplines bundled with this app. If you are
@@ -313,7 +313,7 @@ export default function EmergencyDiaryPage() {
       {/* confirmation modal */}
       {confirm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
           role="dialog"
           aria-modal="true"
           onClick={(e) => {
@@ -325,10 +325,10 @@ export default function EmergencyDiaryPage() {
               <PhoneCall className="h-6 w-6" />
             </span>
             <h3 className="text-lg font-bold">Call {confirm.name}?</h3>
-            <p className="mt-3 rounded-xl border border-white/10 bg-white/[0.04] py-2.5 font-mono text-xl font-black tracking-wider">
+            <p className="mt-3 border border-border bg-card px-4 py-2.5 text-xl font-semibold tabular-nums">
               {confirm.number}
             </p>
-            <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+            <p className="mt-4 text-step-small leading-relaxed text-muted-foreground">
               You will be handed to <span className="font-semibold text-foreground">your phone&apos;s
               dialer</span> with this number ready. SafeReport does <em>not</em> place the call —
               from the dialer it is your decision whether to press call (you can edit the number
@@ -337,7 +337,7 @@ export default function EmergencyDiaryPage() {
             <div className="mt-5 flex gap-3">
               <button
                 onClick={() => setConfirm(null)}
-                className="flex-1 rounded-xl border border-white/15 px-4 py-2.5 text-sm font-semibold transition hover:bg-white/[0.06]"
+                className="flex-1 rounded-xl border border-border px-4 py-2.5 text-sm font-semibold transition hover:bg-muted"
               >
                 Cancel
               </button>
@@ -351,7 +351,7 @@ export default function EmergencyDiaryPage() {
             </div>
             <button
               onClick={() => setConfirm(null)}
-              className="mt-3 text-[11px] text-muted-foreground underline hover:text-foreground"
+              className="mt-3 text-step-small text-muted-foreground underline hover:text-foreground"
             >
               Never mind
             </button>

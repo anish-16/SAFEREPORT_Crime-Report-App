@@ -1,23 +1,21 @@
 import type { NextConfig } from 'next';
 
 /**
- * Split dev (npm run dev:split) runs the UI on :3000 and the API on :4000 —
- * proxy API + media calls so the browser always talks to ONE origin. The
- * unified server (npm run dev / npm start) answers /api and /uploads itself
- * before Next.js ever sees the request, so the proxy is dev-only and never
- * present in production builds.
+ * The frontend IS the whole app now: API route handlers live under app/api,
+ * evidence files are served by app/uploads/[...path], so no dev proxy and no
+ * external backend are involved. Heavy Node-only packages (image forensics,
+ * Prisma, bcrypt) stay outside the bundle.
  */
-const API_PROXY_TARGET = process.env.API_PROXY_TARGET || 'http://localhost:4000';
-
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  async rewrites() {
-    if (process.env.NODE_ENV !== 'development') return [];
-    return [
-      { source: '/api/:path*', destination: `${API_PROXY_TARGET}/api/:path*` },
-      { source: '/uploads/:path*', destination: `${API_PROXY_TARGET}/uploads/:path*` },
-    ];
-  },
+  serverExternalPackages: [
+    'jimp',
+    'exifr',
+    '@prisma/client',
+    'bcryptjs',
+    'jsonwebtoken',
+    '@ffmpeg-installer/ffmpeg',
+  ],
 };
 
 export default nextConfig;

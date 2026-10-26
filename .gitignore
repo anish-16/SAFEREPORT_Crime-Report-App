@@ -10,6 +10,6 @@ uploads/*
 *.log
 .freebuff/
 
-# Local uploaded files
-backend/uploads/*
-!backend/uploads/.gitkeep
+# Local uploaded files (evidence saved at runtime by the app)
+frontend/uploads/*
+!frontend/uploads/.gitkeep

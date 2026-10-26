@@ -200,7 +200,7 @@ export function LocationInput({ value, onChange, onCoordsChange, detectByDefault
             <button
               type="button"
               onClick={detectLocation}
-              className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-white/10 hover:text-primary"
+              className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-muted hover:text-primary"
               aria-label="Use my current location"
               title="Use my current location"
             >
@@ -216,7 +216,7 @@ export function LocationInput({ value, onChange, onCoordsChange, detectByDefault
                 setFromSuggestion(false);
                 onCoordsChange?.(null, null);
               }}
-              className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-white/10 hover:text-foreground"
+              className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground"
               aria-label="Clear location"
             >
               <X className="h-4 w-4" />
@@ -227,7 +227,7 @@ export function LocationInput({ value, onChange, onCoordsChange, detectByDefault
 
       {/* suggestions dropdown */}
       {open && suggestions.length > 0 && (
-        <ul className="absolute left-0 right-0 top-full z-30 mt-1 max-h-60 overflow-auto rounded-xl border border-white/10 bg-card/95 shadow-2xl backdrop-blur-xl">
+        <ul data-taste-skill-ignore="a real overlay menu keeps its lift" className="absolute left-0 right-0 top-full z-30 mt-1 max-h-60 overflow-auto border border-border bg-card shadow-2xl">
           {suggestions.map((s, i) => (
             <li key={`${s.lat}-${s.lon}-${i}`}>
               <button
@@ -236,15 +236,15 @@ export function LocationInput({ value, onChange, onCoordsChange, detectByDefault
                 onClick={() => pick(s)}
                 className={cn(
                   'flex w-full items-start gap-2.5 px-3 py-2.5 text-left transition',
-                  active === i ? 'bg-primary/10' : 'hover:bg-white/[0.05]'
+                  active === i ? 'bg-primary/10' : 'hover:bg-muted'
                 )}
               >
                 <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-                <span className="min-w-0 flex-1 text-xs leading-snug text-foreground">
+                <span className="min-w-0 flex-1 text-step-small leading-snug text-foreground">
                   {s.display_name}
                 </span>
                 {s.type && (
-                  <span className="mt-0.5 shrink-0 rounded bg-white/[0.07] px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <span className="mt-0.5 shrink-0 rounded bg-muted px-1.5 py-0.5 text-step-small  text-muted-foreground">
                     {s.type}
                   </span>
                 )}
@@ -255,7 +255,7 @@ export function LocationInput({ value, onChange, onCoordsChange, detectByDefault
       )}
 
       {/* status line */}
-      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px]">
+      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-step-small">
         {detecting ? (
           <span className="flex items-center gap-1.5 text-muted-foreground">
             <Loader2 className="h-3 w-3 animate-spin text-primary" />
